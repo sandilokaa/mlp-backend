@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
   SuperAdminPersonals.init({
     superAdminId: DataTypes.INTEGER,
     nip: DataTypes.STRING,
-    major: DataTypes.STRING,
     address: DataTypes.TEXT,
     gender: DataTypes.STRING,
     phoneNumber: DataTypes.STRING,
-    birth: DataTypes.STRING
+    placeOfBirth: DataTypes.STRING,
+    dateOfBirth: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'SuperAdminPersonals',

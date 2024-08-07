@@ -55,19 +55,21 @@ app.get('/api/v1/auth/lecturer/me', middleware.authenticateLecturer, authControl
 
 /* -------------- Super Admin Endpoint -------------- */
 
+app.get('/api/v1/superadmin', middleware.authenticateSuperAdmin, superAdminController.handleGetDetailSuperAdmin);
 app.put('/api/v1/superadmin/:id', middleware.authenticateSuperAdmin, superAdminController.handleUpdateProfileSuperAdmin);
-app.post('/api/v1/superadmin', middleware.authenticateSuperAdmin, superAdminController.handleCreateLecturer);
+app.post('/api/v1/superadmin', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleCreateLecturer);
 app.get('/api/v1/superadmin/:superAdminId/lecturer', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleGetLecturerBySuperAdminId);
 app.get('/api/v1/superadmin/:superAdminId/research', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleGetResearchBySuperAdminId);
 app.get('/api/v1/superadmin/research', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.FACULTY_DEAN), superAdminController.handleGetAllResearchByFacultyDean);
-app.get('/api/v1/superadmin/lecturer', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.FACULTY_DEAN), superAdminController.handleGetAllLecturerByFacultyDean);
+app.get('/api/v1/superadmin/lecturer', middleware.authenticateSuperAdmin, superAdminController.handleGetAllLecturerByFacultyDean);
+app.put('/api/v1/superadmin/research/value/:id', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleUpdateResearchValue);
 
 /* -------------- End Super Admin Endpoint -------------- */
 
 
 /* -------------- Lecturer Endpoint -------------- */
 
-app.get('/api/v1/lecturer', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleGetDetailLecturer);
+app.get('/api/v1/lecturer', middleware.authenticateLecturer, lecturerController.handleGetDetailLecturer);
 app.put('/api/v1/lecturer/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleUpdateProfileLecturer);
 app.get('/api/v1/lecturer/research', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleGetResearchByLecturerId);
 app.get('/api/v1/lecturer/research/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleGetResearchById);

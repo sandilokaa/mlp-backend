@@ -19,8 +19,8 @@ const handleUpdateProfileSuperAdmin = async(req, res) => {
         address,
         gender,
         phoneNumber,
-        birth,
-        expertise,
+        placeOfBirth,
+        dateOfBirth,
         bachelor,
         magister,
         doctor
@@ -38,8 +38,8 @@ const handleUpdateProfileSuperAdmin = async(req, res) => {
         address,
         gender,
         phoneNumber,
-        birth,
-        expertise,
+        placeOfBirth,
+        dateOfBirth,
         bachelor,
         magister,
         doctor 
@@ -69,7 +69,7 @@ const handleCreateLecturer = async(req, res) => {
         name, 
         email, 
         password,
-        role:'dosen'
+        role:'lecturer'
     });
 
     res.status(status_code).send({
@@ -108,7 +108,9 @@ const handleGetResearchBySuperAdminId = async(req, res) => {
 
     const superAdminId = req.superadmin.id;
 
-    const { status, status_code, message, data} = await superAdminService.handleGetResearchBySuperAdminId({ superAdminId });
+    const { name, category, title } = req.query;
+
+    const { status, status_code, message, data} = await superAdminService.handleGetResearchBySuperAdminId({ superAdminId, name, category, title });
 
     res.status(status_code).send({
         status: status,
@@ -142,7 +144,9 @@ const handleGetAllResearchByFacultyDean = async(req, res) => {
 
 const handleGetAllLecturerByFacultyDean = async(req, res) => {
 
-    const { status, status_code, message, data} = await superAdminService.handleGetAllLecturerByFacultyDean();
+    const { name } = req.query;
+
+    const { status, status_code, message, data} = await superAdminService.handleGetAllLecturerByFacultyDean({ name });
 
     res.status(status_code).send({
         status: status,
@@ -155,11 +159,55 @@ const handleGetAllLecturerByFacultyDean = async(req, res) => {
 /* ------------------- End Handle Get All Lecturer By Faculty Dean ------------------- */
 
 
+/* ------------------- Handle Get SuperAdmin Data ------------------- */
+
+const handleGetDetailSuperAdmin = async(req, res) => {
+
+    const superAdminId = req.superadmin.id;
+
+    const { status, status_code, message, data} = await superAdminService.handleGetDetailSuperAdmin({ superAdminId });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Get SuperAdmin Data ------------------- */
+
+
+/* ------------------- Handle Update Research Value ------------------- */
+
+const handleUpdateResearchValue = async(req, res) => {
+
+    const { id } = req.params;
+
+    const superAdminId = req.superadmin.id;
+
+    const { value } = req.body;
+
+    const { status, status_code, message, data} = await superAdminService.handleUpdateResearchValue({ superAdminId, id, value });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Update Research Value ------------------- */
+
+
 module.exports = { 
     handleUpdateProfileSuperAdmin,
     handleCreateLecturer,
     handleGetLecturerBySuperAdminId,
     handleGetResearchBySuperAdminId,
     handleGetAllResearchByFacultyDean,
-    handleGetAllLecturerByFacultyDean 
+    handleGetAllLecturerByFacultyDean,
+    handleGetDetailSuperAdmin,
+    handleUpdateResearchValue 
 };

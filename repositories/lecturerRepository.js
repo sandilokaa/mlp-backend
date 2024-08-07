@@ -300,7 +300,7 @@ class LecturerRepository {
                 },
                 {
                     model: LecturerPersonals,
-                    attributes: ['nip', 'address', 'gender', 'birth', 'phoneNumber']
+                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
                 },
                 {
                     model: LecturerEducations,
@@ -309,9 +309,9 @@ class LecturerRepository {
             ]
         };
 
-        const getedLecturerBySuperAdminId = await LecturerDetails.findOne(query);
+        const getDetailLecturer = await LecturerDetails.findOne(query);
 
-        return getedLecturerBySuperAdminId;
+        return getDetailLecturer;
 
     };
 

@@ -16,9 +16,6 @@ module.exports = {
           key: 'id'
         }
       },
-      expertise: {
-        type: Sequelize.STRING
-      },
       major: {
         type: Sequelize.STRING
       },

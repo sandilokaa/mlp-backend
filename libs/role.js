@@ -1,5 +1,5 @@
 exports.ROLES = {
-    FACULTY_DEAN: "faculty dean",
-    EXPERTISE_GROUP: "expertise group",
+    FACULTY_DEAN: "facultyDean",
+    EXPERTISE_GROUP: "expertiseGroup",
     LECTURER: "lecturer",
 };

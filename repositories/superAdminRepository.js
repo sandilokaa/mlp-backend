@@ -2,12 +2,15 @@ const {
     SuperAdmins, 
     SuperAdminPersonals, 
     SuperAdminEducations,
+    SuperAdminDetails,
     Lecturers,
     LecturerPersonals,
     LecturerEducations,
     LecturerDetails,
-    Roadmaps 
+    Roadmaps,
+    ResearchValues
 } = require("../models");
+const { Op } = require("sequelize");
 
 class SuperAdminRepository {
 
@@ -90,20 +93,20 @@ class SuperAdminRepository {
     static async handleUpdateProfileSuperAdminPersonal({
         superAdminId,
         nip,
-        major,
         address,
         gender,
         phoneNumber,
-        birth
+        placeOfBirth,
+        dateOfBirth
     }) {
         
         const updatedSuperAdminPersonal = await SuperAdminPersonals.update({
             nip,
-            major,
             address,
             gender,
             phoneNumber,
-            birth
+            placeOfBirth,
+            dateOfBirth
         },
             { 
                 where: { superAdminId } 
@@ -121,14 +124,14 @@ class SuperAdminRepository {
     
     static async handleUpdateProfileSuperAdminEducation({
         superAdminId,
-        expertise,
+        major,
         bachelor,
         magister,
         doctor
     }) {
         
         const updatedSuperAdminEduction = await SuperAdminEducations.update({
-            expertise,
+            major,
             bachelor,
             magister,
             doctor
@@ -204,11 +207,11 @@ class SuperAdminRepository {
                 },
                 {
                     model: LecturerPersonals,
-                    attributes: ['nip', 'address', 'gender', 'birth', 'phoneNumber']
+                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
                 },
                 {
                     model: LecturerEducations,
-                    attributes: ['expertise', 'major', 'bachelor', 'magister', 'doctor']
+                    attributes: ['major', 'bachelor', 'magister', 'doctor']
                 }
             ]
         };
@@ -224,7 +227,7 @@ class SuperAdminRepository {
 
     /* ------------------- Handle Get Research By Lecturer Id ------------------- */
 
-    static async handleGetResearchBySuperAdminId({ superAdminId }) {
+    static async handleGetResearchBySuperAdminId({ superAdminId, name, category, title }) {
 
         const query = {
             where: { superAdminId },
@@ -240,9 +243,105 @@ class SuperAdminRepository {
                 {
                     model: Lecturers,
                     attributes: ['name', 'email']
+                },
+                {
+                    model: ResearchValues,
+                    attributes: ['value']
                 }
             ]
         };
+
+        if (title) {
+            const searchResearchByTitle = await Roadmaps.findAll({
+                where: {
+                    [Op.or]: [
+                        { title: { [Op.like]: '%' + title + '%' } },
+                    ]
+                },
+                attributes: [
+                    'id',
+                    'title',
+                    'category',
+                    'period',
+                    'ta',
+                    'researchFile'
+                ],
+                include: [
+                    {
+                        model: Lecturers,
+                        attributes: ['name', 'email']
+                    },
+                    {
+                        model: ResearchValues,
+                        attributes: ['value']
+                    }
+                ],
+                limit: 10
+            });
+
+            return searchResearchByTitle;
+        }
+        
+        if (category) {
+            const searchResearchByCategory = await Roadmaps.findAll({
+                where: {
+                    [Op.or]: [
+                        { category: { [Op.like]: '%' + category + '%' } },
+                    ]
+                },
+                attributes: [
+                    'id',
+                    'title',
+                    'category',
+                    'period',
+                    'ta',
+                    'researchFile'
+                ],
+                include: [
+                    {
+                        model: Lecturers,
+                        attributes: ['name', 'email']
+                    },
+                    {
+                        model: ResearchValues,
+                        attributes: ['value']
+                    }
+                ],
+                limit: 10
+            });
+
+            return searchResearchByCategory;
+        }
+        
+        if (name) {
+            const searchResearchByName = await Roadmaps.findAll({
+                where: {},
+                attributes: [
+                    'id',
+                    'title',
+                    'category',
+                    'period',
+                    'ta',
+                    'researchFile'
+                ],
+                include: [
+                    {
+                        model: Lecturers,
+                        attributes: ['name', 'email'],
+                        where: {
+                            name: { [Op.like]: `%${name}%` }
+                        }
+                    },
+                    {
+                        model: ResearchValues,
+                        attributes: ['value']
+                    }
+                ],
+                limit: 10
+            });
+
+            return searchResearchByName;
+        }
 
         const getResearch = await Roadmaps.findAll(query);
 
@@ -278,7 +377,7 @@ class SuperAdminRepository {
     
     /* ------------------- Handle Get All Lecturer By Faculty Dean ------------------- */
 
-    static async handleGetAllLecturerByFacultyDean() {
+    static async handleGetAllLecturerByFacultyDean({ name }) {
 
         const query = {
             where: {},
@@ -289,14 +388,48 @@ class SuperAdminRepository {
                 },
                 {
                     model: LecturerPersonals,
-                    attributes: ['nip', 'address', 'gender', 'birth', 'phoneNumber']
+                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
                 },
                 {
                     model: LecturerEducations,
-                    attributes: ['expertise', 'major', 'bachelor', 'magister', 'doctor']
-                }
+                    attributes: ['major', 'bachelor', 'magister', 'doctor']
+                },
+                {
+                    model: SuperAdmins,
+                    attributes: ['name']
+                },
             ]
         };
+        
+        if (name) {
+            const searchLectureByName = await LecturerDetails.findAll({
+                where: {},
+                include: [
+                    {
+                        model: Lecturers,
+                        attributes: ['name', 'email'],
+                        where: {
+                            name: { [Op.like]: `%${name}%` }
+                        }
+                    },
+                    {
+                        model: LecturerPersonals,
+                        attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
+                    },
+                    {
+                        model: LecturerEducations,
+                        attributes: ['major', 'bachelor', 'magister', 'doctor']
+                    },
+                    {
+                        model: SuperAdmins,
+                        attributes: ['name']
+                    },
+                ],
+                limit: 10
+            });
+
+            return searchLectureByName;
+        }
 
         const getLecturer = await LecturerDetails.findAll(query);
 
@@ -305,6 +438,77 @@ class SuperAdminRepository {
     };
 
     /* ------------------- End Handle Get All Lecturer By Faculty Dean ------------------- */
+
+
+    /* ------------------- Handle Get Detail Lecturer ------------------- */
+
+    static async handleGetDetailSuperAdmin({ superAdminId }) {
+
+        const query = {
+            where: {superAdminId},
+            attributes: [
+                'superAdminId',
+            ],
+            include: [
+                {
+                    model: SuperAdmins,
+                    attributes: ['name', 'email']
+                },
+                {
+                    model: SuperAdminPersonals,
+                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
+                },
+                {
+                    model: SuperAdminEducations,
+                    attributes: ['major', 'bachelor', 'magister', 'doctor']
+                }
+            ]
+        };
+
+        const getDetailSuperAdmin = await SuperAdminDetails.findOne(query);
+
+        return getDetailSuperAdmin;
+
+    };
+
+    /* ------------------- End Handle Get Detail Lecturer ------------------- */
+
+
+    /* ------------------- Handle Get Research Value By Id ------------------- */
+
+    static async handleGetResearchValueById({ id }){
+
+        const getResearchValue = await ResearchValues.findOne({
+            where: { id }
+        });
+
+        return getResearchValue;
+
+    };
+
+    /* ------------------- End Handle Get Research Value By Id ------------------- */
+
+
+    /* ------------------- Handle Update Research Value ------------------- */
+    
+    static async handleUpdateResearchValue({
+        id,
+        value
+    }) {
+        
+        const updatedResearchValue = await ResearchValues.update({
+            value
+        },
+            { 
+                where: { id } 
+            }
+        );
+
+        return updatedResearchValue;
+
+    };
+    
+    /* ------------------- End Handle Update Research Value ------------------- */
 
 };
 

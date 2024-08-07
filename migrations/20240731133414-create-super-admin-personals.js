@@ -19,9 +19,6 @@ module.exports = {
       nip: {
         type: Sequelize.STRING
       },
-      major: {
-        type: Sequelize.STRING
-      },
       address: {
         type: Sequelize.TEXT
       },
@@ -31,7 +28,10 @@ module.exports = {
       phoneNumber: {
         type: Sequelize.STRING
       },
-      birth: {
+      placeOfBirth: {
+        type: Sequelize.STRING
+      },
+      dateOfBirth: {
         type: Sequelize.STRING
       },
       createdAt: {

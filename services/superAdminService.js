@@ -22,8 +22,8 @@ class SuperAdminService {
         address,
         gender,
         phoneNumber,
-        birth,
-        expertise,
+        placeOfBirth,
+        dateOfBirth,
         bachelor,
         magister,
         doctor
@@ -57,10 +57,6 @@ class SuperAdminService {
                     nip = getSuperAdminPersonal.nip;
                 }
 
-                if (!major){
-                    major = getSuperAdminPersonal.major;
-                }
-
                 if (!address){
                     address = getSuperAdminPersonal.address;
                 }
@@ -73,12 +69,16 @@ class SuperAdminService {
                     phoneNumber = getSuperAdminPersonal.phoneNumber;
                 }
 
-                if (!birth){
-                    birth = getSuperAdminPersonal.birth;
+                if (!placeOfBirth){
+                    placeOfBirth = getSuperAdminPersonal.placeOfBirth;
+                }
+                
+                if (!dateOfBirth){
+                    dateOfBirth = getSuperAdminPersonal.dateOfBirth;
                 }
 
-                if (!expertise){
-                    expertise = getSuperAdminEducation.expertise;
+                if (!major){
+                    major = getSuperAdminEducation.major;
                 }
 
                 if (!bachelor){
@@ -105,16 +105,16 @@ class SuperAdminService {
             const updatedSuperAdminPersonal = await superAdminRepository.handleUpdateProfileSuperAdminPersonal({
                 superAdminId,
                 nip,
-                major,
                 address,
                 gender,
                 phoneNumber,
-                birth
+                placeOfBirth,
+                dateOfBirth
             });
 
             const updatedSuperAdminEducation = await superAdminRepository.handleUpdateProfileSuperAdminEducation({
                 superAdminId,
-                expertise,
+                major,
                 bachelor,
                 magister,
                 doctor
@@ -315,16 +315,16 @@ class SuperAdminService {
 
     /* ------------------- Handle Get Research By Lecturer Id ------------------- */
 
-    static async handleGetResearchBySuperAdminId({ superAdminId }){
+    static async handleGetResearchBySuperAdminId({ superAdminId, name, category, title }){
 
         try {
 
-            const getResearch = await superAdminRepository.handleGetResearchBySuperAdminId({ superAdminId });
+            const getResearch = await superAdminRepository.handleGetResearchBySuperAdminId({ superAdminId, name, category, title });
 
             return {
                 status: true,
                 status_code: 201,
-                message: "Successfully displayed lecturer (:",
+                message: "Successfully displayed research (:",
                 data: {
                     getResearch: getResearch
                 },
@@ -386,11 +386,11 @@ class SuperAdminService {
 
     /* ------------------- Handle Get All Lecturer By Faculty Dean ------------------- */
 
-    static async handleGetAllLecturerByFacultyDean(){
+    static async handleGetAllLecturerByFacultyDean({ name }){
 
         try {
 
-            const getLecturer = await superAdminRepository.handleGetAllLecturerByFacultyDean();
+            const getLecturer = await superAdminRepository.handleGetAllLecturerByFacultyDean({ name });
 
             return {
                 status: true,
@@ -418,6 +418,82 @@ class SuperAdminService {
 
 
     /* ------------------- End Handle Get All Lecturer By Faculty Dean ------------------- */
+
+
+    /* ------------------- Handle Get Detail SuperAdmin ------------------- */
+
+    static async handleGetDetailSuperAdmin({ superAdminId }){
+
+        try {
+
+            const getDetailSuperAdmin = await superAdminRepository.handleGetDetailSuperAdmin({ superAdminId });
+
+            return {
+                status: true,
+                status_code: 200,
+                message: "Data displayed successfully!",
+                data: {
+                    getDetailSuperAdmin: getDetailSuperAdmin,
+                },
+            };
+
+        } catch (err) {
+
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    getDetailSuperAdmin: null,
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Get Detail SuperAdmin ------------------- */
+
+
+    /* ------------------- Handle Update Research Value ------------------- */
+
+    static async handleUpdateResearchValue({ superAdminId, id, value }){
+
+        try {
+
+            const getResearchValueById = await superAdminRepository.handleGetResearchValueById({ id });
+
+            if (getResearchValueById.id == id) {
+
+                const updatedResearchValue = await superAdminRepository.handleUpdateResearchValue({ superAdminId, id, value });
+    
+                return {
+                    status: true,
+                    status_code: 200,
+                    message: "Data updated successfully!",
+                    data: {
+                        updatedResearchValue: updatedResearchValue,
+                    },
+                };
+
+            }
+
+        } catch (err) {
+
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    updatedResearchValue: null,
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Update Research Value ------------------- */
 
 };
 
