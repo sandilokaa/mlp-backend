@@ -510,6 +510,78 @@ class SuperAdminRepository {
     
     /* ------------------- End Handle Update Research Value ------------------- */
 
+
+    /* ------------------- Handle Get Research By Id ------------------- */
+
+    static async handleGetResearchById({ id }) {
+        
+        const query = {
+            where: { id },
+            attributes: [
+                'id',
+                'title',
+                'period',
+                'ta',
+                'category',
+                'researchFile'
+            ],
+            include: [
+                {
+                    model: Lecturers,
+                    attributes: ['name', 'email']
+                },
+                {
+                    model: ResearchValues,
+                    attributes: ['value']
+                }
+            ]
+        }
+
+        const getResearch = Roadmaps.findOne(query);
+
+        return getResearch;
+
+    };
+
+    /* ------------------- End  Handle Get Research By Id ------------------- */
+
+
+    /* ------------------- Handle Get Lecture Detail ------------------- */
+
+    static async handleGetLecturerDetail({ id }){
+
+        const query = {
+            where: { id },
+            include: [
+                    {
+                        model: Lecturers,
+                        attributes: ['name', 'email']
+                    },
+                    {
+                        model: LecturerPersonals,
+                        attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
+                    },
+                    // {
+                    //     model: LecturerEducations,
+                    //     attributes: ['major', 'bachelor', 'magister', 'doctor']
+                    // },
+
+                    {
+                        model: ResearchValues,
+                        attributes: ['value']
+                    }
+                ]
+        };
+
+        const getLecturerDetail = LecturerDetails.findOne(query);
+
+        return getLecturerDetail;
+
+    };
+
+    /* ------------------- End Handle Get Lecture Detail ------------------- */
+
+
 };
 
 module.exports = SuperAdminRepository;

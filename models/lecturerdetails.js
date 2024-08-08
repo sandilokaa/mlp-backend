@@ -28,6 +28,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'lecturerEducationId'
       });
 
+      LecturerDetails.hasOne(models.ResearchValues)
+
     }
   }
   LecturerDetails.init({

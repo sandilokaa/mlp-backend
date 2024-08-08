@@ -27,6 +27,7 @@ app.use("/storages", express.static(path.join(__dirname, "storages")));
 const authController = require("./controllers/authController");
 const superAdminController = require("./controllers/superAdminController");
 const lecturerController = require("./controllers/lecturerController");
+const reportNoteController = require("./controllers/reportNoteController");
 
 // ------------------------- End Import Controllers ------------------------- //
 
@@ -56,13 +57,20 @@ app.get('/api/v1/auth/lecturer/me', middleware.authenticateLecturer, authControl
 /* -------------- Super Admin Endpoint -------------- */
 
 app.get('/api/v1/superadmin', middleware.authenticateSuperAdmin, superAdminController.handleGetDetailSuperAdmin);
-app.put('/api/v1/superadmin/:id', middleware.authenticateSuperAdmin, superAdminController.handleUpdateProfileSuperAdmin);
-app.post('/api/v1/superadmin', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleCreateLecturer);
+app.get('/api/v1/superadmin/lecturer/:id', middleware.authenticateSuperAdmin, superAdminController.handleGetLecturerDetail);
 app.get('/api/v1/superadmin/:superAdminId/lecturer', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleGetLecturerBySuperAdminId);
 app.get('/api/v1/superadmin/:superAdminId/research', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleGetResearchBySuperAdminId);
+app.get('/api/v1/superadmin/research/:id', middleware.authenticateLecturer, superAdminController.handleGetResearchById);
 app.get('/api/v1/superadmin/research', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.FACULTY_DEAN), superAdminController.handleGetAllResearchByFacultyDean);
 app.get('/api/v1/superadmin/lecturer', middleware.authenticateSuperAdmin, superAdminController.handleGetAllLecturerByFacultyDean);
+app.get('/api/v1/superadmin/:superAdminId/report', middleware.authenticateSuperAdmin, reportNoteController.handleGetAllReport);
+app.get('/api/v1/superadmin/report/:id', middleware.authenticateSuperAdmin, reportNoteController.handleGetReportById);
+app.post('/api/v1/superadmin/lecturer', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleCreateLecturer);
+app.post('/api/v1/superadmin/report', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), fileUpload.single('reportFile'), reportNoteController.handleCreateReport);
+app.put('/api/v1/superadmin/:id', middleware.authenticateSuperAdmin, superAdminController.handleUpdateProfileSuperAdmin);
+app.put('/api/v1/superadmin/report/:id', middleware.authenticateSuperAdmin, fileUpload.single('reportFile'), reportNoteController.handleUpdateReport);
 app.put('/api/v1/superadmin/research/value/:id', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminController.handleUpdateResearchValue);
+
 
 /* -------------- End Super Admin Endpoint -------------- */
 
@@ -70,11 +78,11 @@ app.put('/api/v1/superadmin/research/value/:id', middleware.authenticateSuperAdm
 /* -------------- Lecturer Endpoint -------------- */
 
 app.get('/api/v1/lecturer', middleware.authenticateLecturer, lecturerController.handleGetDetailLecturer);
-app.put('/api/v1/lecturer/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleUpdateProfileLecturer);
-app.get('/api/v1/lecturer/research', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleGetResearchByLecturerId);
 app.get('/api/v1/lecturer/research/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleGetResearchById);
-app.post('/api/v1/lecturer/research', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('researchFile'), lecturerController.handleLecturerCreateResearch);
+app.get('/api/v1/lecturer/research', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleGetResearchByLecturerId);
+app.put('/api/v1/lecturer/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleUpdateProfileLecturer);
 app.put('/api/v1/lecturer/research/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('researchFile'), lecturerController.handleLecturerUpdateResearch);
+app.post('/api/v1/lecturer/research', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('researchFile'), lecturerController.handleLecturerCreateResearch);
 app.delete('/api/v1/lecturer/research/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerController.handleLecturerDeleteResearch);
 
 /* -------------- End Lecturer Endpoint -------------- */

@@ -495,6 +495,76 @@ class SuperAdminService {
 
     /* ------------------- End Handle Update Research Value ------------------- */
 
+
+    /* ------------------- Handle Get Research By Id ------------------- */
+
+    static async handleGetResearchById({ id }){
+
+        try {
+
+            const getResearch = await superAdminRepository.handleGetResearchById({ id });
+
+            return {
+                status: true,
+                status_code: 200,
+                message: "Data displayed successfully!",
+                data: {
+                    getResearch: getResearch,
+                },
+            };
+
+        } catch (err) {
+
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    getResearch: null,
+                },
+            };
+
+        }
+
+    };
+    
+    /* ------------------- End Handle Get Research By Id ------------------- */
+
+
+    /* ------------------- Handle Get Lecture Detail ------------------- */
+
+    static async handleGetLecturerDetail({ id }){
+
+        try {
+
+            const getLecturerDetail = await superAdminRepository.handleGetLecturerDetail({ id });
+
+            return {
+                status: true,
+                status_code: 200,
+                message: "Data displayed successfully!",
+                data: {
+                    getLecturerDetail: getLecturerDetail,
+                },
+            };
+
+        } catch (err) {
+
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    getLecturerDetail: null,
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Get Lecture Detail ------------------- */
+
 };
 
 module.exports = SuperAdminService;

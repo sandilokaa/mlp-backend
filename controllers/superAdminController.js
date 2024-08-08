@@ -201,6 +201,44 @@ const handleUpdateResearchValue = async(req, res) => {
 /* ------------------- End Handle Update Research Value ------------------- */
 
 
+/* ------------------- Handle Get Research By Id ------------------- */
+
+const handleGetResearchById = async(req, res) => {
+
+    const { id } = req.params;
+
+    const { status, status_code, message, data} = await superAdminService.handleGetResearchById({ id });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Get Research By Id ------------------- */
+
+
+/* ------------------- Handle Get Lecture Detail ------------------- */
+
+const handleGetLecturerDetail = async(req, res) => {
+
+    const { id } = req.params;
+
+    const { status, status_code, message, data} = await superAdminService.handleGetLecturerDetail({ id });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Get Lecture Detail ------------------- */
+
+
 module.exports = { 
     handleUpdateProfileSuperAdmin,
     handleCreateLecturer,
@@ -209,5 +247,7 @@ module.exports = {
     handleGetAllResearchByFacultyDean,
     handleGetAllLecturerByFacultyDean,
     handleGetDetailSuperAdmin,
-    handleUpdateResearchValue 
+    handleUpdateResearchValue,
+    handleGetResearchById,
+    handleGetLecturerDetail 
 };

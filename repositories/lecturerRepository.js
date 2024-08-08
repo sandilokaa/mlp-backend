@@ -178,6 +178,10 @@ class LecturerRepository {
                     attributes: ['name', 'email']
                 },
                 {
+                    model: ResearchValues,
+                    attributes: ['value']
+                },
+                {
                     model: SuperAdmins,
                     attributes: ['name', 'email']
                 },

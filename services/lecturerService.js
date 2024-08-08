@@ -497,7 +497,7 @@ class LecturerService {
 
         }
 
-    }
+    };
     
     /* ------------------- End Handle Get Research By Id ------------------- */
 
