@@ -80,6 +80,7 @@ class AuthService {
                         message: "Super Admin login successfully!",
                         data: {
                             token,
+                            role:getSuperAdminByEmail.role
                         },
                     };
 

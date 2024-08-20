@@ -7,12 +7,47 @@ const {
     LecturerPersonals,
     LecturerEducations,
     LecturerDetails,
-    Roadmaps,
-    ResearchValues
+    Devotions,
+    Assignments
 } = require("../models");
 const { Op } = require("sequelize");
 
 class SuperAdminRepository {
+
+    
+    /* ------------------- Handle Get Detail Superadmin ------------------- */
+
+    static async handleGetDetailSuperAdmin({ superAdminId }) {
+
+        const query = {
+            where: {superAdminId},
+            attributes: [
+                'superAdminId',
+            ],
+            include: [
+                {
+                    model: SuperAdmins,
+                    attributes: ['name', 'email', 'groupName']
+                },
+                {
+                    model: SuperAdminPersonals,
+                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
+                },
+                {
+                    model: SuperAdminEducations,
+                    attributes: ['bachelor', 'magister', 'doctor']
+                }
+            ]
+        };
+
+        const getDetailSuperAdmin = await SuperAdminDetails.findOne(query);
+
+        return getDetailSuperAdmin;
+
+    };
+
+    /* ------------------- End Handle Get Detail Superadmin ------------------- */
+
 
     /* ------------------- Handle Get Super Admin By Id ------------------- */
 
@@ -67,6 +102,7 @@ class SuperAdminRepository {
         name,
         email,
         password,
+        groupName,
         role
     }) {
         
@@ -74,6 +110,7 @@ class SuperAdminRepository {
             name, 
             email, 
             password, 
+            groupName,
             role
         },
             { 
@@ -124,14 +161,12 @@ class SuperAdminRepository {
     
     static async handleUpdateProfileSuperAdminEducation({
         superAdminId,
-        major,
         bachelor,
         magister,
         doctor
     }) {
         
         const updatedSuperAdminEduction = await SuperAdminEducations.update({
-            major,
             bachelor,
             magister,
             doctor
@@ -150,13 +185,14 @@ class SuperAdminRepository {
 
     /* ------------------- Handle Create Lecturer By  Super Admin ------------------- */
 
-    static async handleCreateLecturer({ superAdminId, name, email, password, role }){
+    static async handleCreateLecturer({ superAdminId, name, email, password, groupName, role }){
 
         const lectureRegistered = await Lecturers.create({
             superAdminId,
             name,
             email,
             password,
+            groupName,
             role
         });
 
@@ -191,395 +227,164 @@ class SuperAdminRepository {
     /* ------------------- End Handle Create Lecturer By  Super Admin ------------------- */
 
 
-    /* ------------------- Handle Get Lecturer By Super Admin Id ------------------- */
+    /* ------------------- Handle Get All Lecturer Group ------------------- */
 
-    static async handleGetLecturerBySuperAdminId({ superAdminId }) {
-
-        const query = {
-            where: { superAdminId },
-            attributes: [
-                'id',
-            ],
-            include: [
-                {
-                    model: Lecturers,
-                    attributes: ['name', 'email']
-                },
-                {
-                    model: LecturerPersonals,
-                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
-                },
-                {
-                    model: LecturerEducations,
-                    attributes: ['major', 'bachelor', 'magister', 'doctor']
-                }
-            ]
-        };
-
-        const getedLecturerBySuperAdminId = await LecturerDetails.findAll(query);
-
-        return getedLecturerBySuperAdminId;
-
-    };
-
-    /* ------------------- End Handle Get Lecturer By Super Admin Id ------------------- */
-
-
-    /* ------------------- Handle Get Research By Lecturer Id ------------------- */
-
-    static async handleGetResearchBySuperAdminId({ superAdminId, name, category, title }) {
-
-        const query = {
-            where: { superAdminId },
-            attributes: [
-                'id',
-                'title',
-                'category',
-                'period',
-                'ta',
-                'researchFile'
-            ],
-            include: [
-                {
-                    model: Lecturers,
-                    attributes: ['name', 'email']
-                },
-                {
-                    model: ResearchValues,
-                    attributes: ['value']
-                }
-            ]
-        };
-
-        if (title) {
-            const searchResearchByTitle = await Roadmaps.findAll({
-                where: {
-                    [Op.or]: [
-                        { title: { [Op.like]: '%' + title + '%' } },
-                    ]
-                },
-                attributes: [
-                    'id',
-                    'title',
-                    'category',
-                    'period',
-                    'ta',
-                    'researchFile'
-                ],
-                include: [
-                    {
-                        model: Lecturers,
-                        attributes: ['name', 'email']
-                    },
-                    {
-                        model: ResearchValues,
-                        attributes: ['value']
-                    }
-                ],
-                limit: 10
-            });
-
-            return searchResearchByTitle;
-        }
-        
-        if (category) {
-            const searchResearchByCategory = await Roadmaps.findAll({
-                where: {
-                    [Op.or]: [
-                        { category: { [Op.like]: '%' + category + '%' } },
-                    ]
-                },
-                attributes: [
-                    'id',
-                    'title',
-                    'category',
-                    'period',
-                    'ta',
-                    'researchFile'
-                ],
-                include: [
-                    {
-                        model: Lecturers,
-                        attributes: ['name', 'email']
-                    },
-                    {
-                        model: ResearchValues,
-                        attributes: ['value']
-                    }
-                ],
-                limit: 10
-            });
-
-            return searchResearchByCategory;
-        }
-        
-        if (name) {
-            const searchResearchByName = await Roadmaps.findAll({
-                where: {},
-                attributes: [
-                    'id',
-                    'title',
-                    'category',
-                    'period',
-                    'ta',
-                    'researchFile'
-                ],
-                include: [
-                    {
-                        model: Lecturers,
-                        attributes: ['name', 'email'],
-                        where: {
-                            name: { [Op.like]: `%${name}%` }
-                        }
-                    },
-                    {
-                        model: ResearchValues,
-                        attributes: ['value']
-                    }
-                ],
-                limit: 10
-            });
-
-            return searchResearchByName;
-        }
-
-        const getResearch = await Roadmaps.findAll(query);
-
-        return getResearch;
-
-    };
-
-    /* ------------------- End Handle Get Research By Lecturer Id ------------------- */
-
-
-    /* ------------------- Handle Get All Research By Faculty Dean ------------------- */
-
-    static async handleGetAllResearchByFacultyDean() {
+    static async handleGetAllLecturerGroup({ name, groupName }) {
 
         const query = {
             where: {},
+            attributes: ['id'],
             include: [
                 {
                     model: Lecturers,
-                    attributes: ['name', 'email']
-                }
-            ]
-        };
-
-        const getResearch = await Roadmaps.findAll(query);
-
-        return getResearch;
-
-    };
-
-    /* ------------------- End Handle Get All Research By Faculty Dean ------------------- */
-    
-    
-    /* ------------------- Handle Get All Lecturer By Faculty Dean ------------------- */
-
-    static async handleGetAllLecturerByFacultyDean({ name }) {
-
-        const query = {
-            where: {},
-            include: [
-                {
-                    model: Lecturers,
-                    attributes: ['name', 'email']
+                    attributes: ['name', 'groupName', 'email'],
+                    where: {},
                 },
-                {
-                    model: LecturerPersonals,
-                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
-                },
-                {
-                    model: LecturerEducations,
-                    attributes: ['major', 'bachelor', 'magister', 'doctor']
-                },
-                {
-                    model: SuperAdmins,
-                    attributes: ['name']
-                },
-            ]
-        };
-        
-        if (name) {
-            const searchLectureByName = await LecturerDetails.findAll({
-                where: {},
-                include: [
-                    {
-                        model: Lecturers,
-                        attributes: ['name', 'email'],
-                        where: {
-                            name: { [Op.like]: `%${name}%` }
-                        }
-                    },
-                    {
-                        model: LecturerPersonals,
-                        attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
-                    },
-                    {
-                        model: LecturerEducations,
-                        attributes: ['major', 'bachelor', 'magister', 'doctor']
-                    },
-                    {
-                        model: SuperAdmins,
-                        attributes: ['name']
-                    },
-                ],
-                limit: 10
-            });
-
-            return searchLectureByName;
-        }
-
-        const getLecturer = await LecturerDetails.findAll(query);
-
-        return getLecturer;
-
-    };
-
-    /* ------------------- End Handle Get All Lecturer By Faculty Dean ------------------- */
-
-
-    /* ------------------- Handle Get Detail Lecturer ------------------- */
-
-    static async handleGetDetailSuperAdmin({ superAdminId }) {
-
-        const query = {
-            where: {superAdminId},
-            attributes: [
-                'superAdminId',
             ],
-            include: [
-                {
-                    model: SuperAdmins,
-                    attributes: ['name', 'email']
-                },
-                {
-                    model: SuperAdminPersonals,
-                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
-                },
-                {
-                    model: SuperAdminEducations,
-                    attributes: ['major', 'bachelor', 'magister', 'doctor']
-                }
-            ]
         };
 
-        const getDetailSuperAdmin = await SuperAdminDetails.findOne(query);
-
-        return getDetailSuperAdmin;
-
-    };
-
-    /* ------------------- End Handle Get Detail Lecturer ------------------- */
-
-
-    /* ------------------- Handle Get Research Value By Id ------------------- */
-
-    static async handleGetResearchValueById({ id }){
-
-        const getResearchValue = await ResearchValues.findOne({
-            where: { id }
-        });
-
-        return getResearchValue;
-
-    };
-
-    /* ------------------- End Handle Get Research Value By Id ------------------- */
-
-
-    /* ------------------- Handle Update Research Value ------------------- */
+        if (name && groupName) {
+            query.include[0].where.name = { [Op.like]: `%${name}%` };
+            query.include[0].where.groupName = { [Op.like]: `%${groupName}%` };
+        } else if (name) { 
+            query.include[0].where.name = { [Op.like]: `%${name}%` };
+        } else if (groupName) {
+            query.include[0].where.groupName = { [Op.like]: `%${groupName}%` };
+        }
     
-    static async handleUpdateResearchValue({
-        id,
-        value
-    }) {
-        
-        const updatedResearchValue = await ResearchValues.update({
-            value
-        },
-            { 
-                where: { id } 
-            }
+        let lecturerDetails = await LecturerDetails.findAll(query);
+
+        lecturerDetails = await Promise.all(
+            lecturerDetails.map(async detail => {
+                const lecturerId = detail.id;
+    
+                const [devotionsSum, devotionsCount] = await Promise.all([
+                    Devotions.sum('devotionValue', { where: { lecturerId } }),
+                    Devotions.count({ where: { lecturerId } }),
+                ]);
+    
+                const [assignmentsSum, assignmentsCount] = await Promise.all([
+                    Assignments.sum('assignmentValue', { where: { lecturerId } }),
+                    Assignments.count({ where: { lecturerId } }),
+                ]);
+    
+                const totalSum = devotionsSum + assignmentsSum;
+                const totalCount = devotionsCount + assignmentsCount;
+    
+                const averageValue = totalCount ? totalSum / totalCount : 0;
+    
+                return {
+                    ...detail.dataValues,
+                    averageValue
+                };
+            })
         );
-
-        return updatedResearchValue;
-
-    };
     
-    /* ------------------- End Handle Update Research Value ------------------- */
-
-
-    /* ------------------- Handle Get Research By Id ------------------- */
-
-    static async handleGetResearchById({ id }) {
-        
-        const query = {
-            where: { id },
-            attributes: [
-                'id',
-                'title',
-                'period',
-                'ta',
-                'category',
-                'researchFile'
-            ],
-            include: [
-                {
-                    model: Lecturers,
-                    attributes: ['name', 'email']
-                },
-                {
-                    model: ResearchValues,
-                    attributes: ['value']
-                }
-            ]
-        }
-
-        const getResearch = Roadmaps.findOne(query);
-
-        return getResearch;
+        return lecturerDetails;
 
     };
 
-    /* ------------------- End  Handle Get Research By Id ------------------- */
+    /* ------------------- End Handle Get All Lecturer Group ------------------- */
 
 
     /* ------------------- Handle Get Lecture Detail ------------------- */
 
     static async handleGetLecturerDetail({ id }){
 
-        const query = {
-            where: { id },
-            include: [
-                    {
-                        model: Lecturers,
-                        attributes: ['name', 'email']
-                    },
-                    {
-                        model: LecturerPersonals,
-                        attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
-                    },
-                    // {
-                    //     model: LecturerEducations,
-                    //     attributes: ['major', 'bachelor', 'magister', 'doctor']
-                    // },
+        const [devotionsSum, devotionsCount] = await Promise.all([
+            Devotions.sum('devotionValue', { where: { id } }),
+            Devotions.count({ where: { id } }),
+        ]);
 
-                    {
-                        model: ResearchValues,
-                        attributes: ['value']
-                    }
-                ]
+        const [assignmentsSum, assignmentsCount] = await Promise.all([
+            Assignments.sum('assignmentValue', { where: { id } }),
+            Assignments.count({ where: { id } }),
+        ]);
+
+        const totalSum = devotionsSum + assignmentsSum;
+        const totalCount = devotionsCount + assignmentsCount;
+
+        const averageValue = totalCount ? totalSum / totalCount : 0;
+
+        const query = {
+            where: {id},
+            attributes: [
+                'lecturerId',
+            ],
+            include: [
+                {
+                    model: Lecturers,
+                    attributes: ['name', 'email', 'groupName']
+                },
+                {
+                    model: LecturerPersonals,
+                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
+                },
+                {
+                    model: LecturerEducations,
+                    attributes: ['bachelor', 'magister', 'doctor']
+                },
+                {
+                    model: Devotions,
+                    attributes: ['id', 'devotionName', 'devotionValue'],
+                    limit: 3
+                },
+                {
+                    model: Assignments,
+                    attributes: ['id', 'assignmentName', 'assignmentValue'],
+                    limit: 3
+                }
+            ]
         };
 
-        const getLecturerDetail = LecturerDetails.findOne(query);
+        const getDetailLecturer = await LecturerDetails.findOne(query);
 
-        return getLecturerDetail;
+        if (getDetailLecturer) {
+            getDetailLecturer.dataValues.averageValue = averageValue;
+        }
+
+        return getDetailLecturer;
 
     };
 
     /* ------------------- End Handle Get Lecture Detail ------------------- */
+
+
+    /* ------------------- Handle Get Delete Lecture Detail ------------------- */
+
+    static async handleDeleteLectureById({ id }) {
+
+        const deletedDevotion = await Lecturers.destroy({ where: { id } });
+
+        return deletedDevotion;
+
+    };
+    
+    static async handleDeleteLecturePersonalById({ id }) {
+
+        const deletedDevotion = await LecturerPersonals.destroy({ where: { id } });
+
+        return deletedDevotion;
+
+    };
+    
+    static async handleDeleteLectureEducationById({ id }) {
+
+        const deletedDevotion = await LecturerEducations.destroy({ where: { id } });
+
+        return deletedDevotion;
+
+    };
+    
+    static async handleDeleteLectureDetailById({ id }) {
+
+        const deletedDevotion = await LecturerDetails.destroy({ where: { id } });
+
+        return deletedDevotion;
+
+    };
+
+    /* ------------------- End Handle Get Delete Lecture Detail ------------------- */
 
 
 };

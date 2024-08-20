@@ -1,6 +1,25 @@
 const superAdminService = require("../services/superAdminService");
 
 
+/* ------------------- Handle Get Detail SuperAdmin Data ------------------- */
+
+const handleGetDetailSuperAdmin = async(req, res) => {
+
+    const superAdminId = req.superadmin.id;
+
+    const { status, status_code, message, data} = await superAdminService.handleGetDetailSuperAdmin({ superAdminId });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Get Detail SuperAdmin Data ------------------- */
+
+
 /* ------------------- Handle Update Profile Super Admin ------------------- */
 
 const handleUpdateProfileSuperAdmin = async(req, res) => {
@@ -15,7 +34,7 @@ const handleUpdateProfileSuperAdmin = async(req, res) => {
         password,
         role,
         nip,
-        major,
+        groupName,
         address,
         gender,
         phoneNumber,
@@ -34,7 +53,7 @@ const handleUpdateProfileSuperAdmin = async(req, res) => {
         password,
         role,
         nip,
-        major,
+        groupName,
         address,
         gender,
         phoneNumber,
@@ -60,15 +79,16 @@ const handleUpdateProfileSuperAdmin = async(req, res) => {
 
 const handleCreateLecturer = async(req, res) => {
 
-    const superAdminId = req.superadmin.id;
+    const superAdminId = req.superadmin;
 
     const { name, email, password } = req.body;
 
     const { status, status_code, message, data} = await superAdminService.handleCreateLecturer({
-        superAdminId,
+        superAdminId:superAdminId.id,
         name, 
         email, 
         password,
+        groupName:superAdminId.groupName,
         role:'lecturer'
     });
 
@@ -83,34 +103,13 @@ const handleCreateLecturer = async(req, res) => {
 /* ------------------- End Handle Create Lecturer By  Super Admin ------------------- */
 
 
-/* ------------------- Handle Get Lecturer By Super Admin Id ------------------- */
+/* ------------------- Handle Get All Lecturer Group ------------------- */
 
-const handleGetLecturerBySuperAdminId = async(req, res) => {
+const handleGetAllLecturerGroup = async(req, res) => {
 
-    const { superAdminId } = req.params;
+    const { name, groupName } = req.query;
 
-    const { status, status_code, message, data} = await superAdminService.handleGetLecturerBySuperAdminId({ superAdminId });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Get Lecturer By Super Admin Id ------------------- */
-
-
-/* ------------------- Handle Get Research By Super Admin Id ------------------- */
-
-const handleGetResearchBySuperAdminId = async(req, res) => {
-
-    const superAdminId = req.superadmin.id;
-
-    const { name, category, title } = req.query;
-
-    const { status, status_code, message, data} = await superAdminService.handleGetResearchBySuperAdminId({ superAdminId, name, category, title });
+    const { status, status_code, message, data} = await superAdminService.handleGetAllLecturerGroup({ name, groupName });
 
     res.status(status_code).send({
         status: status,
@@ -120,104 +119,7 @@ const handleGetResearchBySuperAdminId = async(req, res) => {
 
 };
 
-/* ------------------- End Handle Get Research By Super Admin Id ------------------- */
-
-
-/* ------------------- Handle Get All Research By Faculty Dean ------------------- */
-
-const handleGetAllResearchByFacultyDean = async(req, res) => {
-
-    const { status, status_code, message, data} = await superAdminService.handleGetAllResearchByFacultyDean();
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Get All Research By Faculty Dean ------------------- */
-
-
-/* ------------------- Handle Get All Lecturer By Faculty Dean ------------------- */
-
-const handleGetAllLecturerByFacultyDean = async(req, res) => {
-
-    const { name } = req.query;
-
-    const { status, status_code, message, data} = await superAdminService.handleGetAllLecturerByFacultyDean({ name });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Get All Lecturer By Faculty Dean ------------------- */
-
-
-/* ------------------- Handle Get SuperAdmin Data ------------------- */
-
-const handleGetDetailSuperAdmin = async(req, res) => {
-
-    const superAdminId = req.superadmin.id;
-
-    const { status, status_code, message, data} = await superAdminService.handleGetDetailSuperAdmin({ superAdminId });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Get SuperAdmin Data ------------------- */
-
-
-/* ------------------- Handle Update Research Value ------------------- */
-
-const handleUpdateResearchValue = async(req, res) => {
-
-    const { id } = req.params;
-
-    const superAdminId = req.superadmin.id;
-
-    const { value } = req.body;
-
-    const { status, status_code, message, data} = await superAdminService.handleUpdateResearchValue({ superAdminId, id, value });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Update Research Value ------------------- */
-
-
-/* ------------------- Handle Get Research By Id ------------------- */
-
-const handleGetResearchById = async(req, res) => {
-
-    const { id } = req.params;
-
-    const { status, status_code, message, data} = await superAdminService.handleGetResearchById({ id });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Get Research By Id ------------------- */
+/* ------------------- End Handle Get All Lecturer Group ------------------- */
 
 
 /* ------------------- Handle Get Lecture Detail ------------------- */
@@ -239,15 +141,33 @@ const handleGetLecturerDetail = async(req, res) => {
 /* ------------------- End Handle Get Lecture Detail ------------------- */
 
 
+/* ------------------- Handle Get Delete Lecture Detail ------------------- */
+
+const handleDeleteLectureById = async(req, res) => {
+
+    const { id } = req.params;
+
+    const superAdminId = req.superadmin.id;
+
+    const { status, status_code, message, data} = await superAdminService.handleDeleteLectureById({ id, superAdminId });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Get Delete Lecture Detail ------------------- */
+
+
+
 module.exports = { 
     handleUpdateProfileSuperAdmin,
     handleCreateLecturer,
-    handleGetLecturerBySuperAdminId,
-    handleGetResearchBySuperAdminId,
-    handleGetAllResearchByFacultyDean,
-    handleGetAllLecturerByFacultyDean,
+    handleGetAllLecturerGroup,
     handleGetDetailSuperAdmin,
-    handleUpdateResearchValue,
-    handleGetResearchById,
-    handleGetLecturerDetail 
+    handleGetLecturerDetail,
+    handleDeleteLectureById
 };

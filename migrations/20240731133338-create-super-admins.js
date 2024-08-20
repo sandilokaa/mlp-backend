@@ -18,6 +18,9 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
+      groupName: {
+        type: Sequelize.STRING
+      },
       role: {
         type: Sequelize.STRING
       },

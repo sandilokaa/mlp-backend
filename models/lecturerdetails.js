@@ -28,7 +28,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'lecturerEducationId'
       });
 
-      LecturerDetails.hasOne(models.ResearchValues)
+      LecturerDetails.hasMany(models.Devotions, {
+        foreignKey: 'lecturerId'
+      });
+      
+      LecturerDetails.hasMany(models.Assignments, {
+        foreignKey: 'lecturerId'
+      });
 
     }
   }

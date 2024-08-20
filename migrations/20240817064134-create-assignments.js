@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Roadmaps', {
+    await queryInterface.createTable('Assignments', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -23,20 +23,20 @@ module.exports = {
           key: 'id'
         }
       },
-      title: {
+      assignmentName: {
         type: Sequelize.STRING
       },
-      period: {
+      assignmentType: {
         type: Sequelize.STRING
       },
-      ta: {
-        type: Sequelize.STRING
-      },
-      category: {
-        type: Sequelize.STRING
-      },
-      researchFile: {
+      assignmentDescription: {
         type: Sequelize.TEXT
+      },
+      assignmentFile: {
+        type: Sequelize.TEXT
+      },
+      assignmentValue: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -49,6 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Roadmaps');
+    await queryInterface.dropTable('Assignments');
   }
 };

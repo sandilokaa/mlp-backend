@@ -21,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   SuperAdminEducations.init({
     superAdminId: DataTypes.INTEGER,
-    major: DataTypes.STRING,
     bachelor: DataTypes.JSON,
     magister: DataTypes.JSON,
     doctor: DataTypes.JSON,

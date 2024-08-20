@@ -16,9 +16,6 @@ module.exports = {
           key: 'id'
         }
       },
-      major: {
-        type: Sequelize.STRING
-      },
       bachelor: {
         type: Sequelize.JSON
       },

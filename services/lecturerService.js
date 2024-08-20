@@ -1,5 +1,4 @@
 const lecturerRepository = require("../repositories/lecturerRepository");
-const fileRemove = require("../utils/fileRemove");
 
 class LecturerService {
 
@@ -13,7 +12,7 @@ class LecturerService {
         password,
         role,
         nip,
-        major,
+        groupName,
         address,
         gender,
         phoneNumber,
@@ -43,6 +42,10 @@ class LecturerService {
                 if (!password){
                     password = getLecturer.password;
                 }
+                
+                if (!groupName){
+                    groupName = getLecturer.groupName;
+                }
 
                 if (!role){
                     role = getLecturer.role;
@@ -50,10 +53,6 @@ class LecturerService {
 
                 if (!nip){
                     nip = getLecturerPersonal.nip;
-                }
-
-                if (!major){
-                    major = getLecturerPersonal.major;
                 }
 
                 if (!address){
@@ -94,6 +93,7 @@ class LecturerService {
                 name,
                 email,
                 password,
+                groupName,
                 role
             });
 
@@ -109,7 +109,6 @@ class LecturerService {
 
             const updatedLecturerEducation = await lecturerRepository.handleUpdateProfileLecturerEducation({
                 lecturerId,
-                major,
                 bachelor,
                 magister,
                 doctor
@@ -144,292 +143,6 @@ class LecturerService {
     };
 
     /* ------------------- End Handle Update Profile Lecturer ------------------- */
-
-
-    /* ------------------- Handle Get Research By Lecturer Id ------------------- */
-
-    static async handleGetResearchByLecturerId({ lecturerId }){
-
-        try {
-
-            const getResearch = await lecturerRepository.handleGetResearchByLecturerId({ lecturerId });
-
-            return {
-                status: true,
-                status_code: 201,
-                message: "Successfully displayed research",
-                data: {
-                    getResearch: getResearch
-                },
-            };
-            
-        } catch (err) {
-            
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    getResearch: null,
-                },
-            };
-
-        }
-
-    };
-
-    /* ------------------- End Handle Get Research By Lecturer Id ------------------- */
-
-
-    /* ------------------- Handle Lecturer Create Research ------------------- */
-
-    static async handleLecturerCreateResearch({
-        superAdminId,
-        lecturerId,
-        title,
-        period,
-        ta,
-        category,
-        researchFile,
-        value
-    }) {
-
-        try {
-            
-            // ------------------------- Payload Validation ------------------------- //
-
-            if (!title) {
-                return {
-                    status: false,
-                    status_code: 400,
-                    message: "Title is required!",
-                    data: {
-                        researchCreated: null,
-                    },
-                };
-            }
-
-            if (!period) {
-                return {
-                    status: false,
-                    status_code: 400,
-                    message: "Period is required!",
-                    data: {
-                        researchCreated: null,
-                    },
-                };
-            }
-
-            if (!ta) {
-                return {
-                    status: false,
-                    status_code: 400,
-                    message: "TA is required!",
-                    data: {
-                        researchCreated: null,
-                    },
-                };
-            }
-
-            if (!category) {
-                return {
-                    status: false,
-                    status_code: 400,
-                    message: "Category is required!",
-                    data: {
-                        researchCreated: null,
-                    },
-                };
-            }
-
-            // ------------------------- End Payload Validation ------------------------- //
-
-            const getLecturer = await lecturerRepository.handleGetLecturerById({id: lecturerId});
-
-            const researchCreated = await lecturerRepository.handleLecturerCreateResearch({
-                superAdminId: getLecturer.superAdminId,
-                lecturerId,
-                title,
-                period,
-                ta,
-                category,
-                researchFile
-            });
-
-            const createResearchValue = await lecturerRepository.handleCreateResearchValue({
-                superAdminId: getLecturer.superAdminId,
-                roadmapId: researchCreated.id,
-                value
-            })
-
-            return {
-                status: true,
-                status_code: 201,
-                message: "Successfully created research",
-                data: {
-                    researchCreated: researchCreated,
-                    valueCreated: createResearchValue
-                },
-            }
-
-        } catch (err) {
-            
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    researchCreated: null,
-                    valueCreated: null
-                },
-            }
-
-        }
-
-    };
-
-    /* ------------------- End Handle Lecturer Create Research ------------------- */
-
-
-    /* ------------------- Handle Lecturer Update Research ------------------- */
-
-    static async handleLecturerUpdateResearch({
-        id,
-        superAdminId,
-        lecturerId,
-        title,
-        period,
-        ta,
-        category,
-        researchFile
-    }) {
-
-        try {
-
-            const getResearch = await lecturerRepository.handleResearchById({ id });
-
-            if (getResearch.id == id) {
-
-                if (!superAdminId){
-                    superAdminId = getResearch.superAdminId;
-                }
-
-                if (!lecturerId){
-                    lecturerId = getResearch.lecturerId;
-                }
-
-                if (!title){
-                    title = getResearch.title;
-                }
-
-                if (!period){
-                    period = getResearch.period;
-                }
-
-                if (!ta){
-                    ta = getResearch.ta;
-                }
-
-                if (!category){
-                    category = getResearch.category;
-                }
-
-                if (!researchFile){
-                    researchFile = getResearch.researchFile;
-                } else {
-                    fileRemove(getResearch.researchFile)
-                }
-
-            }
-
-            const updatedResearch = await lecturerRepository.handleLecturerUpdateResearch({
-                id,
-                title,
-                period,
-                ta,
-                category,
-                researchFile
-            });
-
-            return {
-                status: true,
-                status_code: 201,
-                message: "Data updated successfully",
-                data: {
-                    updatedResearch: updatedResearch
-                },
-            };
-            
-        } catch (err) {
-            
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    updatedResearch: null,
-                },
-            };
-
-        }
-
-    };
-
-    /* ------------------- End Handle Lecturer Update Research ------------------- */
-
-
-    /* ------------------- Handle Lecturer Delete Research ------------------- */
-
-    static async handleLecturerDeleteResearch({ id, lecturerId }) {
-
-        try {
-
-            const getResearch = await lecturerRepository.handleResearchById({ id });
-
-            if (getResearch.lecturerId == lecturerId) {
-
-                const deletedResearch = await lecturerRepository.handleLecturerDeleteResearch({ id });
-
-                fileRemove(getResearch.researchFile);
-
-                return {
-                    status: true,
-                    status_code: 201,
-                    message: "Data deleted successfully",
-                    data: {
-                        deletedResearch: deletedResearch
-                    },
-                };
-
-            } else {
-
-                return {
-                    status: false,
-                    status_code: 401,
-                    message: "Resource Unauthorized",
-                    data: {
-                        deletedResearch: null,
-                    },
-                }
-
-            }
-            
-        } catch (err) {
-            
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    deletedResearch: null,
-                },
-            };
-
-        }
-
-    };
-
-    /* ------------------- End Handle Lecturer Delete Research ------------------- */
 
 
     /* ------------------- Handle Get Detail Lecturer ------------------- */
@@ -467,20 +180,55 @@ class LecturerService {
     /* ------------------- End Handle Get Detail Lecturer ------------------- */
 
 
-    /* ------------------- Handle Get Research By Id ------------------- */
+    /* ------------------- Handle Get All Lecturer Expertise Group ------------------- */
 
-    static async handleGetResearchById({ id }){
+    static async handleGetAllLecturerExpertiseGroup({ name, groupName }){
 
         try {
 
-            const getResearch = await lecturerRepository.handleGetResearchById({ id });
+            const getLecturer = await lecturerRepository.handleGetAllLecturerExpertiseGroup({ name, groupName });
+
+            return {
+                status: true,
+                status_code: 201,
+                message: "Successfully displayed data",
+                data: {
+                    getLecturer: getLecturer
+                },
+            };
+            
+        } catch (err) {
+            
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    getLecturer: null,
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Get All Lecturer Expertise Group ------------------- */
+
+
+    /* ------------------- Handle Get Lecturer Expertise Group By Id ------------------- */
+
+    static async handleGetLecturerExpertiseGroupById({ id }){
+
+        try {
+
+            const getLecturerDetail = await lecturerRepository.handleGetLecturerExpertiseGroupById({ id });
 
             return {
                 status: true,
                 status_code: 200,
                 message: "Data displayed successfully!",
                 data: {
-                    getResearch: getResearch,
+                    getLecturerDetail: getLecturerDetail,
                 },
             };
 
@@ -491,15 +239,15 @@ class LecturerService {
                 status_code: 500,
                 message: err.message,
                 data: {
-                    getResearch: null,
+                    getLecturerDetail: null,
                 },
             };
 
         }
 
     };
-    
-    /* ------------------- End Handle Get Research By Id ------------------- */
+
+    /* ------------------- End Handle Get Lecturer Expertise Group By Id ------------------- */
 
 };
 

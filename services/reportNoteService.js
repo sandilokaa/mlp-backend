@@ -6,9 +6,9 @@ class ReportNoteService {
 
     static async handleCreateReport({ 
         superAdminId,
-        reportTitle,
-        period,
-        ta,
+        reportName,
+        reportPeriod,
+        academicYear,
         reportStatus,
         reportFile
     }) {
@@ -17,7 +17,7 @@ class ReportNoteService {
 
             // ------------------------- Payload Validation ------------------------- //
 
-            if (!reportTitle) {
+            if (!reportName) {
                 return {
                     status: false,
                     status_code: 400,
@@ -28,7 +28,7 @@ class ReportNoteService {
                 };
             }
 
-            if (!period) {
+            if (!reportPeriod) {
                 return {
                     status: false,
                     status_code: 400,
@@ -39,7 +39,7 @@ class ReportNoteService {
                 };
             }
             
-            if (!ta) {
+            if (!academicYear) {
                 return {
                     status: false,
                     status_code: 400,
@@ -54,9 +54,9 @@ class ReportNoteService {
 
             const createdReport = await reportNoteRepository.handleCreateReport({
                 superAdminId,
-                reportTitle,
-                period,
-                ta,
+                reportName,
+                reportPeriod,
+                academicYear,
                 reportStatus,
                 reportFile
             })
@@ -164,9 +164,9 @@ class ReportNoteService {
     static async handleUpdateReport({
         id,
         superAdminId,
-        reportTitle,
-        period,
-        ta,
+        reportName,
+        reportPeriod,
+        academicYear,
         reportStatus,
         reportFile
     }) {
@@ -177,16 +177,16 @@ class ReportNoteService {
 
             if (getReport.id == id) {
 
-                if (!reportTitle){
-                    reportTitle = getReport.reportTitle;
+                if (!reportName){
+                    reportName = getReport.reportName;
                 }
 
-                if (!period){
-                    period = getReport.period;
+                if (!reportPeriod){
+                    reportPeriod = getReport.period;
                 }
 
-                if (!ta){
-                    ta = getReport.ta;
+                if (!academicYear){
+                    academicYear = getReport.academicYear;
                 }
                 
                 if (!reportStatus){
@@ -204,9 +204,9 @@ class ReportNoteService {
             const updatedReport = await reportNoteRepository.handleUpdateReport({
                 id,
                 superAdminId,
-                reportTitle,
-                period,
-                ta,
+                reportName,
+                reportPeriod,
+                academicYear,
                 reportStatus,
                 reportFile
             });
@@ -237,6 +237,41 @@ class ReportNoteService {
     };
 
     /* ------------------- End Handle Update Report ------------------- */
+
+
+    /* ------------------- Handle Get All Report By Dean ------------------- */
+
+    static async handleGetAllReportByDean(){
+
+        try {
+
+            const getedReport = await reportNoteRepository.handleGetAllReportByDean();
+
+            return {
+                status: true,
+                status_code: 201,
+                message: "Successfully displayed report (:",
+                data: {
+                    getedReport: getedReport
+                },
+            };
+            
+        } catch (err) {
+            
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    getedReport: null,
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Get All Report By Dean ------------------- */
     
 };
 

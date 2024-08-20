@@ -12,17 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      Reports.belongsTo(models.SuperAdmins,{
+      Reports.belongsTo(models.SuperAdmins, {
         foreignKey: 'superAdminId'
       });
-
     }
   }
   Reports.init({
     superAdminId: DataTypes.INTEGER,
-    reportTitle: DataTypes.STRING,
-    period: DataTypes.STRING,
-    ta: DataTypes.STRING,
+    reportName: DataTypes.STRING,
+    reportPeriod: DataTypes.STRING,
+    academicYear: DataTypes.STRING,
     reportStatus: {
       type: DataTypes.ENUM,
       values: ['Selesai', 'New Comment', 'Dalam Review'],

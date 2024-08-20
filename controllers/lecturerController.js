@@ -15,7 +15,7 @@ const handleUpdateProfileLecturer = async(req, res) => {
         password,
         role,
         nip,
-        major,
+        groupName,
         address,
         gender,
         phoneNumber,
@@ -34,7 +34,7 @@ const handleUpdateProfileLecturer = async(req, res) => {
         password,
         role,
         nip,
-        major,
+        groupName,
         address,
         gender,
         phoneNumber,
@@ -56,121 +56,6 @@ const handleUpdateProfileLecturer = async(req, res) => {
 /* ------------------- End Handle Update Profile Lecturer ------------------- */
 
 
-/* ------------------- Handle Lecturer Create Research ------------------- */
-
-const handleLecturerCreateResearch = async(req, res) => {
-
-    const lecturerId = req.lecturer.id;
-
-    let researchFile = "";
-
-    if (req.file) {
-        researchFile = req.file.path;
-    }
-
-    const { superAdminId, roadmapId, title, period, ta, category, value } = req.body;
-
-    const { status, status_code, message, data} = await lecturerService.handleLecturerCreateResearch({
-        superAdminId,
-        roadmapId,
-        lecturerId,
-        title,
-        period,
-        ta,
-        category,
-        researchFile,
-        value
-    });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Lecturer Create Research ------------------- */
-
-
-/* ------------------- Handle Get Research By Lecturer Id ------------------- */
-
-const handleGetResearchByLecturerId = async(req, res) => {
-
-    const lecturerId = req.lecturer.id;
-
-    const { status, status_code, message, data} = await lecturerService.handleGetResearchByLecturerId({ lecturerId });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Get Research By Lecturer Id ------------------- */
-
-
-/* ------------------- Handle Lecturer Update Research ------------------- */
-
-const handleLecturerUpdateResearch = async(req, res) => {
-
-    const { id } = req.params;
-
-    const lecturerId = req.lecturer.id;
-
-    let researchFile = "";
-
-    if (req.file) {
-        researchFile = req.file.path;
-    }
-
-    const { superAdminId, title, period, ta, category } = req.body;
-
-    const { status, status_code, message, data} = await lecturerService.handleLecturerUpdateResearch({
-        id,
-        superAdminId,
-        lecturerId,
-        title,
-        period,
-        ta,
-        category,
-        researchFile
-    });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Lecturer Update Research ------------------- */
-
-
-/* ------------------- Handle Lecturer Delete Research ------------------- */
-
-const handleLecturerDeleteResearch = async(req, res) => {
-
-    const { id } = req.params;
-
-    const lecturerId = req.lecturer.id;
-
-    const { status, status_code, message, data} = await lecturerService.handleLecturerDeleteResearch({ id, lecturerId });
-
-    res.status(status_code).send({
-        status: status,
-        message: message,
-        data: data,
-    });
-
-};
-
-/* ------------------- End Handle Lecturer Delete Research ------------------- */
-
-
 /* ------------------- Handle Get Detail Lecturer ------------------- */
 
 const handleGetDetailLecturer = async(req, res) => {
@@ -190,13 +75,13 @@ const handleGetDetailLecturer = async(req, res) => {
 /* ------------------- End Handle Get Detail Lecturer ------------------- */
 
 
-/* ------------------- Handle Get Research By Id ------------------- */
+/* ------------------- Handle Get All Lecturer Expertise Group ------------------- */
 
-const handleGetResearchById = async(req, res) => {
+const handleGetAllLecturerExpertiseGroup = async(req, res) => {
+    
+    const { name, groupName } = req.query;
 
-    const { id } = req.params;
-
-    const { status, status_code, message, data} = await lecturerService.handleGetResearchById({ id });
+    const { status, status_code, message, data} = await lecturerService.handleGetAllLecturerExpertiseGroup({ name, groupName });
 
     res.status(status_code).send({
         status: status,
@@ -206,15 +91,31 @@ const handleGetResearchById = async(req, res) => {
 
 };
 
-/* ------------------- End Handle Get Research By Id ------------------- */
+/* ------------------- End Handle Get All Lecturer Expertise Group ------------------- */
 
 
-module.exports = { 
-    handleGetResearchByLecturerId,
+/* ------------------- Handle Get Lecturer Expertise Group By Id ------------------- */
+
+const handleGetLecturerExpertiseGroupById = async(req, res) => {
+    
+    const { id } = req.params
+
+    const { status, status_code, message, data} = await lecturerService.handleGetLecturerExpertiseGroupById({ id });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Get Lecturer Expertise Group By Id ------------------- */
+
+
+module.exports = {
     handleUpdateProfileLecturer,
-    handleLecturerCreateResearch,
-    handleLecturerUpdateResearch,
-    handleLecturerDeleteResearch,
     handleGetDetailLecturer,
-    handleGetResearchById
+    handleGetAllLecturerExpertiseGroup,
+    handleGetLecturerExpertiseGroupById
 };

@@ -13,13 +13,13 @@ const handleCreateReport = async(req, res) => {
         reportFile = req.file.path;
     }
 
-    const { reportTitle, period, ta, reportStatus } = req.body;
+    const { reportName, reportPeriod, academicYear, reportStatus } = req.body;
 
     const { status, status_code, message, data} = await reportNoteService.handleCreateReport({ 
         superAdminId,
-        reportTitle,
-        period,
-        ta,
+        reportName,
+        reportPeriod,
+        academicYear,
         reportStatus,
         reportFile
     });
@@ -89,14 +89,14 @@ const handleUpdateReport = async(req, res) => {
         reportFile = req.file.path;
     }
 
-    const { reportTitle, period, ta, reportStatus } = req.body;
+    const { reportName, reportPeriod, academicYear, reportStatus } = req.body;
 
     const { status, status_code, message, data} = await reportNoteService.handleUpdateReport({
         id,
         superAdminId,
-        reportTitle,
-        period,
-        ta,
+        reportName,
+        reportPeriod,
+        academicYear,
         reportFile,
         reportStatus
     });
@@ -112,9 +112,27 @@ const handleUpdateReport = async(req, res) => {
 /* ------------------- End Handle Update Report ------------------- */
 
 
+/* ------------------- Handle Get All Report By Dean ------------------- */
+
+const handleGetAllReportByDean = async(req, res) => {
+
+    const { status, status_code, message, data} = await reportNoteService.handleGetAllReportByDean();
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Get All Report By Dean ------------------- */
+
+
 module.exports = {
     handleCreateReport,
     handleGetAllReport,
     handleGetReportById,
-    handleUpdateReport
+    handleUpdateReport,
+    handleGetAllReportByDean
 }

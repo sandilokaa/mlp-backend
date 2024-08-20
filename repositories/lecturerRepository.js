@@ -3,10 +3,10 @@ const {
     LecturerPersonals, 
     LecturerEducations,
     LecturerDetails,
-    Roadmaps,
-    ResearchValues,
-    SuperAdmins
+    Devotions,
+    Assignments
 } = require("../models");
+const { Op } = require("sequelize");
 
 class LecturerRepository {
 
@@ -63,6 +63,7 @@ class LecturerRepository {
         name,
         email,
         password,
+        groupName,
         role
     }) {
         
@@ -70,6 +71,7 @@ class LecturerRepository {
             name, 
             email, 
             password, 
+            groupName,
             role
         },
             { 
@@ -120,7 +122,6 @@ class LecturerRepository {
 
     static async handleUpdateProfileLecturerEducation({
         lecturerId,
-        major,
         bachelor,
         magister,
         doctor
@@ -143,154 +144,24 @@ class LecturerRepository {
     /* ------------------- End Handle Update Profile Lecturer Eduction ------------------- */
 
 
-    /* ------------------- Handle Get Research By Id ------------------- */
-
-    static async handleResearchById({ id }) {
-
-        const getResearch = await Roadmaps.findOne({
-            where: { id }
-        });
-
-        return getResearch;
-
-    };
-
-    /* ------------------- Handle Get Research By Id ------------------- */
-
-
-    /* ------------------- Handle Get Research By Lecturer Id ------------------- */
-
-    static async handleGetResearchByLecturerId({ lecturerId }) {
-
-        const query = {
-            where: { lecturerId },
-            attributes: [
-                'id',
-                'title',
-                'category',
-                'period',
-                'ta',
-                'researchFile'
-            ],
-            include: [
-                {
-                    model: Lecturers,
-                    attributes: ['name', 'email']
-                },
-                {
-                    model: ResearchValues,
-                    attributes: ['value']
-                },
-                {
-                    model: SuperAdmins,
-                    attributes: ['name', 'email']
-                },
-            ]
-        };
-
-        const getResearch = await Roadmaps.findAll(query);
-
-        return getResearch;
-
-    };
-
-    /* ------------------- End Handle Get Research By Lecturer Id ------------------- */
-
-    
-    /* ------------------- Handle Lecturer Create Research ------------------- */
-
-    static async handleLecturerCreateResearch({
-        superAdminId,
-        lecturerId,
-        title,
-        period,
-        ta,
-        category,
-        researchFile
-    }) {
-
-        const researchCreated = await  Roadmaps.create({
-            superAdminId,
-            lecturerId,
-            title,
-            period,
-            ta,
-            category,
-            researchFile
-        });
-
-        return researchCreated;
-
-    };
-
-    /* ------------------- End Handle Lecturer Create Research ------------------- */
-
-
-    /* ------------------- Handle Create Research Value ------------------- */
-
-    static async handleCreateResearchValue({
-        superAdminId,
-        roadmapId,
-        value
-    }) {
-
-        const createResearchValue = await ResearchValues.create({
-            superAdminId,
-            roadmapId,
-            value
-        });
-
-        return createResearchValue;
-
-    };
-
-    /* ------------------- End Handle Create Research Value ------------------- */
-
-
-    /* ------------------- Handle Lecturer Update Research ------------------- */
-
-    static async handleLecturerUpdateResearch({
-        id,
-        title,
-        period,
-        ta,
-        category,
-        researchFile
-    }) {
-
-        const updatedResearch = await Roadmaps.update({
-            title,
-            period,
-            ta,
-            category,
-            researchFile
-        }, {
-            where: { id }
-        });
-
-        return updatedResearch;
-
-    };
-
-    /* ------------------- End Handle Lecturer Update Research ------------------- */
-
-
-    /* ------------------- Handle Lecturer Delete Research ------------------- */
-
-    static async handleLecturerDeleteResearch({ id }) {
-
-        const deletedResearch = await Roadmaps.destroy({ where: { id } });
-
-        return deletedResearch;
-
-    };
-
-    /* ------------------- End Handle Lecturer Delete Research ------------------- */
-
-
     /* ------------------- Handle Get Detail Lecturer ------------------- */
 
     static async handleGetDetailLecturer({ lecturerId }) {
+
+        const [devotionsSum, devotionsCount] = await Promise.all([
+            Devotions.sum('devotionValue', { where: { lecturerId } }),
+            Devotions.count({ where: { lecturerId } }),
+        ]);
+
+        const [assignmentsSum, assignmentsCount] = await Promise.all([
+            Assignments.sum('assignmentValue', { where: { lecturerId } }),
+            Assignments.count({ where: { lecturerId } }),
+        ]);
+
+        const totalSum = devotionsSum + assignmentsSum;
+        const totalCount = devotionsCount + assignmentsCount;
+
+        const averageValue = totalCount ? totalSum / totalCount : 0;
 
         const query = {
             where: {lecturerId},
@@ -300,7 +171,7 @@ class LecturerRepository {
             include: [
                 {
                     model: Lecturers,
-                    attributes: ['name', 'email']
+                    attributes: ['name', 'email', 'groupName']
                 },
                 {
                     model: LecturerPersonals,
@@ -308,12 +179,16 @@ class LecturerRepository {
                 },
                 {
                     model: LecturerEducations,
-                    attributes: ['major', 'bachelor', 'magister', 'doctor']
+                    attributes: ['bachelor', 'magister', 'doctor']
                 }
             ]
         };
 
         const getDetailLecturer = await LecturerDetails.findOne(query);
+
+        if (getDetailLecturer) {
+            getDetailLecturer.dataValues.averageValue = averageValue;
+        }
 
         return getDetailLecturer;
 
@@ -322,43 +197,128 @@ class LecturerRepository {
     /* ------------------- End Handle Get Detail Lecturer ------------------- */
 
 
-    /* ------------------- Handle Get Research By Id ------------------- */
+    /* ------------------- Handle Get All Lecturer Expertise Group ------------------- */
 
-    static async handleGetResearchById({ id }) {
-        
+    static async handleGetAllLecturerExpertiseGroup({ name, groupName }) {
+
         const query = {
-            where: { id },
+            where: {},
+            attributes: ['id'],
+            include: [
+                {
+                    model: Lecturers,
+                    attributes: ['name', 'groupName'],
+                    where: {},
+                },
+            ],
+        };
+
+        if (name && groupName) {
+            query.include[0].where.name = { [Op.like]: `%${name}%` };
+            query.include[0].where.groupName = { [Op.like]: `%${groupName}%` };
+        } else if (name) { 
+            query.include[0].where.name = { [Op.like]: `%${name}%` };
+        } else if (groupName) {
+            query.include[0].where.groupName = { [Op.like]: `%${groupName}%` };
+        }
+    
+        let lecturerDetails = await LecturerDetails.findAll(query);
+
+        lecturerDetails = await Promise.all(
+            lecturerDetails.map(async detail => {
+                const lecturerId = detail.id;
+    
+                const [devotionsSum, devotionsCount] = await Promise.all([
+                    Devotions.sum('devotionValue', { where: { lecturerId } }),
+                    Devotions.count({ where: { lecturerId } }),
+                ]);
+    
+                const [assignmentsSum, assignmentsCount] = await Promise.all([
+                    Assignments.sum('assignmentValue', { where: { lecturerId } }),
+                    Assignments.count({ where: { lecturerId } }),
+                ]);
+    
+                const totalSum = devotionsSum + assignmentsSum;
+                const totalCount = devotionsCount + assignmentsCount;
+    
+                const averageValue = totalCount ? totalSum / totalCount : 0;
+    
+                return {
+                    ...detail.dataValues,
+                    averageValue
+                };
+            })
+        );
+    
+        return lecturerDetails;
+
+    };
+
+    /* ------------------- End Handle Get All Lecturer Expertise Group ------------------- */
+
+
+    /* ------------------- Handle Get Lecturer Expertise Group By Id ------------------- */
+
+    static async handleGetLecturerExpertiseGroupById({ id }) {
+
+        const [devotionsSum, devotionsCount] = await Promise.all([
+            Devotions.sum('devotionValue', { where: { id } }),
+            Devotions.count({ where: { id } }),
+        ]);
+
+        const [assignmentsSum, assignmentsCount] = await Promise.all([
+            Assignments.sum('assignmentValue', { where: { id } }),
+            Assignments.count({ where: { id } }),
+        ]);
+
+        const totalSum = devotionsSum + assignmentsSum;
+        const totalCount = devotionsCount + assignmentsCount;
+
+        const averageValue = totalCount ? totalSum / totalCount : 0;
+
+        const query = {
+            where: {id},
             attributes: [
-                'id',
-                'title',
-                'period',
-                'ta',
-                'category',
-                'researchFile'
+                'lecturerId',
             ],
             include: [
                 {
                     model: Lecturers,
-                    attributes: ['name', 'email']
+                    attributes: ['name', 'email', 'groupName']
                 },
                 {
-                    model: SuperAdmins,
-                    attributes: ['name', 'email']
+                    model: LecturerPersonals,
+                    attributes: ['nip', 'address', 'gender', 'placeOfBirth', 'dateOfBirth', 'phoneNumber']
                 },
                 {
-                    model: ResearchValues,
-                    attributes: ['value']
+                    model: LecturerEducations,
+                    attributes: ['bachelor', 'magister', 'doctor']
+                },
+                {
+                    model: Devotions,
+                    attributes: ['id', 'devotionName', 'devotionValue'],
+                    limit: 3
+                },
+                {
+                    model: Assignments,
+                    attributes: ['id', 'assignmentName', 'assignmentValue'],
+                    limit: 3
                 }
             ]
+        };
+
+        const getDetailLecturer = await LecturerDetails.findOne(query);
+
+        if (getDetailLecturer) {
+            getDetailLecturer.dataValues.averageValue = averageValue;
         }
 
-        const getResearch = Roadmaps.findOne(query);
-
-        return getResearch;
+        return getDetailLecturer;
 
     };
 
-    /* ------------------- End  Handle Get Research By Id ------------------- */
+    /* ------------------- End Handle Get Lecturer Expertise Group By Id ------------------- */
+
 
 };
 

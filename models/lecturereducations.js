@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   LecturerEducations.init({
     lecturerId: DataTypes.INTEGER,
-    major: DataTypes.STRING,
     bachelor: DataTypes.JSON,
     magister: DataTypes.JSON,
     doctor: DataTypes.JSON,

@@ -16,13 +16,13 @@ module.exports = {
           key: 'id'
         }
       },
-      reportTitle: {
+      reportName: {
         type: Sequelize.STRING
       },
-      period: {
+      reportPeriod: {
         type: Sequelize.STRING
       },
-      ta: {
+      academicYear: {
         type: Sequelize.STRING
       },
       reportStatus: {

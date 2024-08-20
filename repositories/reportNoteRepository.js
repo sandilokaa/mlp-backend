@@ -6,18 +6,18 @@ class ReportNoteRepository {
 
     static async handleCreateReport({ 
         superAdminId,
-        reportTitle,
-        period,
-        ta,
+        reportName,
+        reportPeriod,
+        academicYear,
         reportStatus,
         reportFile
     }) {
 
         const createdReport = await Reports.create({
             superAdminId,
-            reportTitle,
-            period,
-            ta,
+            reportName,
+            reportPeriod,
+            academicYear,
             reportStatus,
             reportFile
         });
@@ -37,9 +37,9 @@ class ReportNoteRepository {
             where: { superAdminId },
             attributes: [
                 'id',
-                'reportTitle',
-                'period',
-                'ta',
+                'reportName',
+                'reportPeriod',
+                'academicYear',
                 'reportFile',
                 'reportStatus',
                 'updatedAt'
@@ -63,9 +63,9 @@ class ReportNoteRepository {
             where: { id },
             attributes: [
                 'id',
-                'reportTitle',
-                'period',
-                'ta',
+                'reportName',
+                'reportPeriod',
+                'academicYear',
                 'reportFile',
                 'reportStatus',
                 'updatedAt'
@@ -85,17 +85,17 @@ class ReportNoteRepository {
 
     static async handleUpdateReport({
         id,
-        reportTitle,
-        period,
-        ta,
+        reportName,
+        reportPeriod,
+        academicYear,
         reportStatus,
         reportFile
     }) {
 
         const updatedReport = await Reports.update({
-            reportTitle,
-            period,
-            ta,
+            reportName,
+            reportPeriod,
+            academicYear,
             reportStatus,
             reportFile
         }, {
@@ -107,6 +107,32 @@ class ReportNoteRepository {
     };
 
     /* ------------------- End Handle Update Report ------------------- */
+
+
+    /* ------------------- Handle Get All Report By Dean ------------------- */
+
+    static async handleGetAllReportByDean() {
+
+        const query = {
+            where: {},
+            attributes: [
+                'id',
+                'reportName',
+                'reportPeriod',
+                'academicYear',
+                'reportFile',
+                'reportStatus',
+                'updatedAt'
+            ]
+        };
+
+        const getedReport = await Reports.findAll(query);
+
+        return getedReport;
+
+    };
+
+    /* ------------------- End Handle Get All Report By Dean ------------------- */
 
 };
 

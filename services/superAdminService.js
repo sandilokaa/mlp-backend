@@ -2,11 +2,45 @@ const superAdminRepository = require("../repositories/superAdminRepository");
 const authRepository = require("../repositories/authRepository");
 
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { JWT } = require("../libs/jwtSecurity");
 const SALT_ROUND = 10;
 
 class SuperAdminService {
+
+
+    /* ------------------- Handle Get Detail SuperAdmin ------------------- */
+
+    static async handleGetDetailSuperAdmin({ superAdminId }){
+
+        try {
+
+            const getDetailSuperAdmin = await superAdminRepository.handleGetDetailSuperAdmin({ superAdminId });
+
+            return {
+                status: true,
+                status_code: 200,
+                message: "Data displayed successfully!",
+                data: {
+                    getDetailSuperAdmin: getDetailSuperAdmin,
+                },
+            };
+
+        } catch (err) {
+
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    getDetailSuperAdmin: null,
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Get Detail SuperAdmin ------------------- */
+
 
     /* ------------------- Handle Update Profile Super Admin ------------------- */
     
@@ -18,7 +52,7 @@ class SuperAdminService {
         password,
         role,
         nip,
-        major,
+        groupName,
         address,
         gender,
         phoneNumber,
@@ -47,6 +81,10 @@ class SuperAdminService {
 
                 if (!password){
                     password = getSuperAdmin.password;
+                }
+                
+                if (!groupName){
+                    groupName = getSuperAdmin.groupName;
                 }
 
                 if (!role){
@@ -77,10 +115,6 @@ class SuperAdminService {
                     dateOfBirth = getSuperAdminPersonal.dateOfBirth;
                 }
 
-                if (!major){
-                    major = getSuperAdminEducation.major;
-                }
-
                 if (!bachelor){
                     bachelor = getSuperAdminEducation.bachelor;
                 }
@@ -99,6 +133,7 @@ class SuperAdminService {
                 name,
                 email,
                 password,
+                groupName,
                 role
             });
 
@@ -114,7 +149,6 @@ class SuperAdminService {
 
             const updatedSuperAdminEducation = await superAdminRepository.handleUpdateProfileSuperAdminEducation({
                 superAdminId,
-                major,
                 bachelor,
                 magister,
                 doctor
@@ -153,7 +187,7 @@ class SuperAdminService {
 
     /* ------------------- Handle Create Lecturer By  Super Admin ------------------- */
 
-    static async handleCreateLecturer({ superAdminId, name, email, password, role }) {
+    static async handleCreateLecturer({ superAdminId, name, email, password, groupName , role }) {
     
         try {
 
@@ -225,6 +259,7 @@ class SuperAdminService {
                     name,
                     email,
                     password: hashedPassword,
+                    groupName,
                     role
                 });
 
@@ -278,119 +313,13 @@ class SuperAdminService {
 
 
 
-    /* ------------------- Handle Get Lecturer By Super Admin Id ------------------- */
+    /* ------------------- Handle Get All Lecturer Group ------------------- */
 
-    static async handleGetLecturerBySuperAdminId({ superAdminId }){
-
-        try {
-
-            const getedLecturerBySuperAdminId = await superAdminRepository.handleGetLecturerBySuperAdminId({ superAdminId });
-
-            return {
-                status: true,
-                status_code: 201,
-                message: "Successfully displayed lecturer (:",
-                data: {
-                    getedLecturerBySuperAdminId: getedLecturerBySuperAdminId
-                },
-            };
-            
-        } catch (err) {
-            
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    getedLecturerBySuperAdminId: null,
-                },
-            };
-
-        }
-
-    };
-
-    /* ------------------- End Handle Get Lecturer By Super Admin Id ------------------- */
-
-
-    /* ------------------- Handle Get Research By Lecturer Id ------------------- */
-
-    static async handleGetResearchBySuperAdminId({ superAdminId, name, category, title }){
+    static async handleGetAllLecturerGroup({ name, groupName }){
 
         try {
 
-            const getResearch = await superAdminRepository.handleGetResearchBySuperAdminId({ superAdminId, name, category, title });
-
-            return {
-                status: true,
-                status_code: 201,
-                message: "Successfully displayed research (:",
-                data: {
-                    getResearch: getResearch
-                },
-            };
-            
-        } catch (err) {
-            
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    getResearch: null,
-                },
-            };
-
-        }
-
-    };
-
-    /* ------------------- End Handle Get Research By Super Admin Id ------------------- */
-
-
-    /* ------------------- Handle Get All Research By Faculty Dean ------------------- */
-
-    static async handleGetAllResearchByFacultyDean(){
-
-        try {
-
-            const getResearch = await superAdminRepository.handleGetAllResearchByFacultyDean();
-
-            return {
-                status: true,
-                status_code: 201,
-                message: "Successfully displayed lecturer (:",
-                data: {
-                    getResearch: getResearch
-                },
-            };
-            
-        } catch (err) {
-            
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    getResearch: null,
-                },
-            };
-
-        }
-
-    };
-
-
-    /* ------------------- End Handle Get All Research By Faculty Dean ------------------- */
-
-
-    /* ------------------- Handle Get All Lecturer By Faculty Dean ------------------- */
-
-    static async handleGetAllLecturerByFacultyDean({ name }){
-
-        try {
-
-            const getLecturer = await superAdminRepository.handleGetAllLecturerByFacultyDean({ name });
+            const getLecturer = await superAdminRepository.handleGetAllLecturerGroup({ name, groupName });
 
             return {
                 status: true,
@@ -416,121 +345,9 @@ class SuperAdminService {
 
     };
 
+    /* ------------------- End Handle Get All Lecturer Group ------------------- */
 
-    /* ------------------- End Handle Get All Lecturer By Faculty Dean ------------------- */
-
-
-    /* ------------------- Handle Get Detail SuperAdmin ------------------- */
-
-    static async handleGetDetailSuperAdmin({ superAdminId }){
-
-        try {
-
-            const getDetailSuperAdmin = await superAdminRepository.handleGetDetailSuperAdmin({ superAdminId });
-
-            return {
-                status: true,
-                status_code: 200,
-                message: "Data displayed successfully!",
-                data: {
-                    getDetailSuperAdmin: getDetailSuperAdmin,
-                },
-            };
-
-        } catch (err) {
-
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    getDetailSuperAdmin: null,
-                },
-            };
-
-        }
-
-    };
-
-    /* ------------------- End Handle Get Detail SuperAdmin ------------------- */
-
-
-    /* ------------------- Handle Update Research Value ------------------- */
-
-    static async handleUpdateResearchValue({ superAdminId, id, value }){
-
-        try {
-
-            const getResearchValueById = await superAdminRepository.handleGetResearchValueById({ id });
-
-            if (getResearchValueById.id == id) {
-
-                const updatedResearchValue = await superAdminRepository.handleUpdateResearchValue({ superAdminId, id, value });
     
-                return {
-                    status: true,
-                    status_code: 200,
-                    message: "Data updated successfully!",
-                    data: {
-                        updatedResearchValue: updatedResearchValue,
-                    },
-                };
-
-            }
-
-        } catch (err) {
-
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    updatedResearchValue: null,
-                },
-            };
-
-        }
-
-    };
-
-    /* ------------------- End Handle Update Research Value ------------------- */
-
-
-    /* ------------------- Handle Get Research By Id ------------------- */
-
-    static async handleGetResearchById({ id }){
-
-        try {
-
-            const getResearch = await superAdminRepository.handleGetResearchById({ id });
-
-            return {
-                status: true,
-                status_code: 200,
-                message: "Data displayed successfully!",
-                data: {
-                    getResearch: getResearch,
-                },
-            };
-
-        } catch (err) {
-
-            return {
-                status: false,
-                status_code: 500,
-                message: err.message,
-                data: {
-                    getResearch: null,
-                },
-            };
-
-        }
-
-    };
-    
-    /* ------------------- End Handle Get Research By Id ------------------- */
-
-
     /* ------------------- Handle Get Lecture Detail ------------------- */
 
     static async handleGetLecturerDetail({ id }){
@@ -564,6 +381,68 @@ class SuperAdminService {
     };
 
     /* ------------------- End Handle Get Lecture Detail ------------------- */
+
+
+    /* ------------------- Handle Get Delete Lecture Detail ------------------- */
+
+    static async handleDeleteLectureById({ id, superAdminId }) {
+
+        try {
+
+            const getLecturer = await superAdminRepository.handleGetLecturerDetail({ id });
+
+            if (getLecturer.superAdminId == superAdminId) {
+
+                const deletedLecturer = await superAdminRepository.handleDeleteLectureById({ id: getLecturer.lecturerId });
+                const deletedLecturerPersonal = await superAdminRepository.handleDeleteLecturePersonalById({ id: getLecturer.lecturerId });
+                const deletedLecturerEducation = await superAdminRepository.handleDeleteLectureEducationById({ id: getLecturer.lecturerId });
+                const deletedLecturerDetail = await superAdminRepository.handleDeleteLectureDetailById({ id: getLecturer.lecturerId });
+
+                return {
+                    status: true,
+                    status_code: 201,
+                    message: "Data deleted successfully",
+                    data: {
+                        deletedLecturer: deletedLecturer,
+                        deletedLecturerPersonal: deletedLecturerPersonal,
+                        deletedLecturerEducation: deletedLecturerEducation,
+                        deletedLecturerDetail: deletedLecturerDetail,
+                    },
+                };
+
+            } else {
+
+                return {
+                    status: false,
+                    status_code: 401,
+                    message: "Resource Unauthorized",
+                    data: {
+                        deletedLecturer: null,
+                        deletedLecturerPersonal: null,
+                        deletedLecturerEducation: null,
+                        deletedLecturerDetail: null,
+                    },
+                }
+
+            }
+            
+        } catch (err) {
+            
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    deletedLecturer: null,
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Get Delete Lecture Detail ------------------- */
+
 
 };
 
