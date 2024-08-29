@@ -7,7 +7,9 @@ const handleGetDevotionByLecturerId = async(req, res) => {
 
     const lecturerId = req.lecturer.id;
 
-    const { status, status_code, message, data} = await lecturerDevotionService.handleGetDevotionByLecturerId({ lecturerId });
+    const { devotionPeriod, academicYear } = req.query;
+
+    const { status, status_code, message, data} = await lecturerDevotionService.handleGetDevotionByLecturerId({ lecturerId, devotionPeriod, academicYear });
 
     res.status(status_code).send({
         status: status,

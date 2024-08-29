@@ -8,7 +8,7 @@ class SuperAdminDevotionRepository {
 
     /* ------------------- Handle Get Devotion By Lecturer Id ------------------- */
 
-    static async handleGetDevotionBySuperAdminId({ superAdminId, devotionName }) {
+    static async handleGetDevotionBySuperAdminId({ superAdminId, devotionName, devotionPeriod, academicYear }) {
 
         const query = {
             where: { superAdminId },
@@ -27,28 +27,18 @@ class SuperAdminDevotionRepository {
         };
 
         if (devotionName) {
-            const searchByName = await Devotions.findAll({
-                where: {
-                    [Op.or]: [
-                        { devotionName: { [Op.like]: '%' + devotionName + '%' } },
-                    ]
-                },
-                attributes: [
-                    'id',
-                    'devotionName',
-                    'devotionValue',
-                ],
-                include: [
-                    {
-                        model: Lecturers,
-                        attributes: ['name', 'email']    
-                    }
-                ],
-                limit: 10
-            });
-
-            return searchByName;
+            query.where[Op.or] = [
+                { devotionName: { [Op.like]: '%' + devotionName + '%' } }
+            ];
         }
+        
+        if (devotionPeriod && academicYear) {
+            query.where[Op.and] = [
+                { devotionPeriod: devotionPeriod },
+                { academicYear: academicYear }
+            ];
+        }
+        
 
         const getDevotion = await Devotions.findAll(query);
 

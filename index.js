@@ -87,6 +87,10 @@ app.post('/api/v1/superadmin/report', middleware.authenticateSuperAdmin, middlew
 app.put('/api/v1/superadmin/report/:id', middleware.authenticateSuperAdmin, fileUpload.single('reportFile'), reportNoteController.handleUpdateReport);
 app.get('/api/v1/superadmin/report', middleware.authenticateSuperAdmin, reportNoteController.handleGetAllReportByDean);
 
+app.post('/api/v1/superadmin/note', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.FACULTY_DEAN), reportNoteController.handleCreateNote);
+app.post('/api/v1/superadmin/note/done', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.FACULTY_DEAN), reportNoteController.handleUpdateNoteStatus);
+app.get('/api/v1/superadmin/:reportId/note', middleware.authenticateSuperAdmin, reportNoteController.handleGetNoteByReportId);
+
 /* -------------- End Super Admin Endpoint -------------- */
 
 

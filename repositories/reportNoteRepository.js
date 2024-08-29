@@ -1,4 +1,5 @@
-const { Reports } = require("../models");
+const { Reports, SuperAdmins, Notes } = require("../models");
+const { Op } = require("sequelize");
 
 class ReportNoteRepository {
 
@@ -31,7 +32,7 @@ class ReportNoteRepository {
 
     /* ------------------- Handle Get All Report ------------------- */
 
-    static async handleGetAllReport({ superAdminId }) {
+    static async handleGetAllReport({ superAdminId, reportPeriod, academicYear }) {
 
         const query = {
             where: { superAdminId },
@@ -45,6 +46,29 @@ class ReportNoteRepository {
                 'updatedAt'
             ]
         };
+
+        if (reportPeriod && academicYear) {
+            const searchByPeriod = await Reports.findAll({
+                where: {
+                    [Op.and]: [
+                        { reportPeriod: reportPeriod },
+                        { academicYear: academicYear },
+                    ]
+                },
+                attributes: [
+                    'id',
+                    'reportName',
+                    'reportPeriod',
+                    'academicYear',
+                    'reportFile',
+                    'reportStatus',
+                    'updatedAt'
+                ],
+                limit: 10
+            });
+
+            return searchByPeriod;
+        }
 
         const getedReport = await Reports.findAll(query);
 
@@ -105,13 +129,29 @@ class ReportNoteRepository {
         return updatedReport;
 
     };
+    
+    
+    static async handleUpdateReportByDean({
+        reportId,
+        reportStatus
+    }) {
+
+        const updatedReport = await Reports.update({
+            reportStatus
+        }, {
+            where: { id: reportId }
+        });
+
+        return updatedReport;
+
+    };
 
     /* ------------------- End Handle Update Report ------------------- */
 
 
     /* ------------------- Handle Get All Report By Dean ------------------- */
 
-    static async handleGetAllReportByDean() {
+    static async handleGetAllReportByDean({ reportPeriod, academicYear }) {
 
         const query = {
             where: {},
@@ -123,8 +163,43 @@ class ReportNoteRepository {
                 'reportFile',
                 'reportStatus',
                 'updatedAt'
-            ]
+            ],
+            include: [
+                {
+                    model: SuperAdmins,
+                    attributes: ['groupName']
+                },
+            ],
         };
+
+        if (reportPeriod && academicYear) {
+            const searchByPeriod = await Reports.findAll({
+                where: {
+                    [Op.and]: [
+                        { reportPeriod: reportPeriod },
+                        { academicYear: academicYear },
+                    ]
+                },
+                attributes: [
+                    'id',
+                    'reportName',
+                    'reportPeriod',
+                    'academicYear',
+                    'reportFile',
+                    'reportStatus',
+                    'updatedAt'
+                ],
+                include: [
+                    {
+                        model: SuperAdmins,
+                        attributes: ['groupName']
+                    },
+                ],
+                limit: 10
+            });
+
+            return searchByPeriod;
+        }
 
         const getedReport = await Reports.findAll(query);
 
@@ -133,6 +208,48 @@ class ReportNoteRepository {
     };
 
     /* ------------------- End Handle Get All Report By Dean ------------------- */
+
+
+    /* ------------------- Handle Create Note ------------------- */
+
+    static async handleCreateNote({ 
+        reportId,
+        superAdminId,
+        note
+    }) {
+
+        const createdNote = await Notes.create({
+            reportId,
+            superAdminId,
+            note
+        });
+
+        return createdNote;
+
+    };
+
+    /* ------------------- End Handle Create Note ------------------- */
+
+
+    /* ------------------- Handle Get Note By Report Id ------------------- */
+
+    static async handleGetNoteByReportId({ reportId }) {
+
+        const query = {
+            where: { reportId },
+            attributes: [
+                'note',
+                'createdAt',
+            ]
+        };
+
+        const getDevotion = await Notes.findAll(query);
+
+        return getDevotion;
+
+    };
+
+    /* ------------------- End Handle Get Note By Report Id ------------------- */
 
 };
 

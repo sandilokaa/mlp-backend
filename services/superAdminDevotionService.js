@@ -4,11 +4,11 @@ class SuperAdminDevotionService {
 
     /* ------------------- Handle Get Devotion By Lecturer Id ------------------- */
 
-    static async handleGetDevotionBySuperAdminId({ superAdminId, devotionName }){
+    static async handleGetDevotionBySuperAdminId({ superAdminId, devotionName, devotionPeriod, academicYear }){
 
         try {
 
-            const getDevotion = await superAdminDevotionRepository.handleGetDevotionBySuperAdminId({ superAdminId, devotionName });
+            const getDevotion = await superAdminDevotionRepository.handleGetDevotionBySuperAdminId({ superAdminId, devotionName, devotionPeriod, academicYear });
 
             return {
                 status: true,

@@ -91,11 +91,11 @@ class ReportNoteService {
 
     /* ------------------- Handle Get All Report ------------------- */
 
-    static async handleGetAllReport({ superAdminId }){
+    static async handleGetAllReport({ superAdminId, reportPeriod, academicYear }){
 
         try {
 
-            const getedReport = await reportNoteRepository.handleGetAllReport({ superAdminId });
+            const getedReport = await reportNoteRepository.handleGetAllReport({ superAdminId, reportPeriod, academicYear });
 
             return {
                 status: true,
@@ -241,11 +241,11 @@ class ReportNoteService {
 
     /* ------------------- Handle Get All Report By Dean ------------------- */
 
-    static async handleGetAllReportByDean(){
+    static async handleGetAllReportByDean({ reportPeriod, academicYear }){
 
         try {
 
-            const getedReport = await reportNoteRepository.handleGetAllReportByDean();
+            const getedReport = await reportNoteRepository.handleGetAllReportByDean({ reportPeriod, academicYear });
 
             return {
                 status: true,
@@ -272,6 +272,148 @@ class ReportNoteService {
     };
 
     /* ------------------- End Handle Get All Report By Dean ------------------- */
+
+
+    /* ------------------- Handle Create Note ------------------- */
+
+    static async handleCreateNote({
+        reportId,
+        superAdminId,
+        note,
+        reportStatus
+    }) {
+
+        try {
+
+            // ------------------------- Payload Validation ------------------------- //
+
+            if (!note) {
+                return {
+                    status: false,
+                    status_code: 400,
+                    message: "Note is required!",
+                    data: {
+                        createdNote: null,
+                    },
+                };
+            }
+
+            // ------------------------- End Payload Validation ------------------------- //
+
+            
+            const createdNote = await reportNoteRepository.handleCreateNote({
+                reportId,
+                superAdminId,
+                note
+            });
+
+            const updateStatus = await reportNoteRepository.handleUpdateReportByDean({reportId: createdNote.reportId, reportStatus: 'New Comment'});
+
+            return {
+                status: true,
+                status_code: 201,
+                message: "Successfully created report",
+                data: {
+                    createdNote: createdNote,
+                    updateStatus: updateStatus
+                },
+            }
+
+            
+        } catch (err) {
+            
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    createdNote: null,
+                    updateStatus: null
+                },
+            }
+
+        }
+
+    };
+
+    /* ------------------- End Handle Create Note ------------------- */
+
+
+    /* ------------------- Handle Get Note By Report Id ------------------- */
+
+    static async handleGetNoteByReportId({ reportId }){
+
+        try {
+
+            const getNote = await reportNoteRepository.handleGetNoteByReportId({ reportId });
+
+            return {
+                status: true,
+                status_code: 201,
+                message: "Successfully displayed data",
+                data: {
+                    getNote: getNote
+                },
+            };
+            
+        } catch (err) {
+            
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    getNote: null,
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Get Note By Report Id ------------------- */
+
+
+    /* ------------------- Handle Update Note Status By Id ------------------- */
+
+    static async handleUpdateNoteStatus({ superAdminId, reportStatus, note, reportId }){
+
+        try {
+            
+            const createdNote = await reportNoteRepository.handleCreateNote({ superAdminId, reportId, note: 'Selesai' });
+            
+            const updatedReport = await reportNoteRepository.handleUpdateReportByDean({
+                reportId: createdNote.reportId,
+                reportStatus: createdNote.note
+            });
+
+            return {
+                status: true,
+                status_code: 201,
+                message: "Data updated successfully",
+                data: {
+                    createdNote: createdNote,
+                    updatedReport: updatedReport
+                },
+            };
+            
+        } catch (err) {
+            
+            return {
+                status: false,
+                status_code: 500,
+                message: err.message,
+                data: {
+                    createdNote: null,
+                    updatedReport: null
+                },
+            };
+
+        }
+
+    };
+
+    /* ------------------- End Handle Update Note Status By Id ------------------- */
     
 };
 

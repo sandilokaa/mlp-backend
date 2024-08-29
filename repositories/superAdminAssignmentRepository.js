@@ -8,7 +8,7 @@ class SuperAdminAssignmentRepository {
 
     /* ------------------- Handle Get Assignment By Lecturer Id ------------------- */
 
-    static async handleGetAssignmentBySuperAdminId({ superAdminId, assignmentName }) {
+    static async handleGetAssignmentBySuperAdminId({ superAdminId, assignmentName, assignmentPeriod, academicYear }) {
 
         const query = {
             where: { superAdminId },
@@ -27,27 +27,16 @@ class SuperAdminAssignmentRepository {
         };
 
         if (assignmentName) {
-            const searchByName = await Assignments.findAll({
-                where: {
-                    [Op.or]: [
-                        { assignmentName: { [Op.like]: '%' + assignmentName + '%' } },
-                    ]
-                },
-                attributes: [
-                    'id',
-                    'assignmentName',
-                    'assignmentValue',
-                ],
-                include: [
-                    {
-                        model: Lecturers,
-                        attributes: ['name', 'email']    
-                    }
-                ],
-                limit: 10
-            });
-
-            return searchByName;
+            query.where[Op.or] = [
+                { assignmentName: { [Op.like]: '%' + assignmentName + '%' } }
+            ];
+        }
+        
+        if (assignmentPeriod && academicYear) {
+            query.where[Op.and] = [
+                { assignmentPeriod: assignmentPeriod },
+                { academicYear: academicYear }
+            ];
         }
 
         const getAssignment = await Assignments.findAll(query);
@@ -72,7 +61,9 @@ class SuperAdminAssignmentRepository {
                 'assignmentType',
                 'assignmentDescription',
                 'assignmentFile',
-                'assignmentValue'
+                'assignmentValue',
+                'assignmentPeriod',
+                'academicYear'
             ],
             include: [
                 {

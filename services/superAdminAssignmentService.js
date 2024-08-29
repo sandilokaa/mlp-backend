@@ -4,11 +4,11 @@ class SuperAdminAssignmentService {
 
     /* ------------------- Handle Get Assignment By Lecturer Id ------------------- */
 
-    static async handleGetAssignmentBySuperAdminId({ superAdminId, assignmentName }){
+    static async handleGetAssignmentBySuperAdminId({ superAdminId, assignmentName, assignmentPeriod, academicYear }){
 
         try {
 
-            const getAssignment = await superAdminAssignmentRepository.handleGetAssignmentBySuperAdminId({ superAdminId, assignmentName });
+            const getAssignment = await superAdminAssignmentRepository.handleGetAssignmentBySuperAdminId({ superAdminId, assignmentName, assignmentPeriod, academicYear });
 
             return {
                 status: true,

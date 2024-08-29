@@ -41,7 +41,9 @@ const handleGetAllReport = async(req, res) => {
 
     const superAdminId = req.superadmin.id;
 
-    const { status, status_code, message, data} = await reportNoteService.handleGetAllReport({ superAdminId });
+    const { reportPeriod, academicYear } = req.query;
+
+    const { status, status_code, message, data} = await reportNoteService.handleGetAllReport({ superAdminId, reportPeriod, academicYear });
 
     res.status(status_code).send({
         status: status,
@@ -116,7 +118,9 @@ const handleUpdateReport = async(req, res) => {
 
 const handleGetAllReportByDean = async(req, res) => {
 
-    const { status, status_code, message, data} = await reportNoteService.handleGetAllReportByDean();
+    const { reportPeriod, academicYear } = req.query;
+
+    const { status, status_code, message, data} = await reportNoteService.handleGetAllReportByDean({ reportPeriod, academicYear });
 
     res.status(status_code).send({
         status: status,
@@ -129,10 +133,79 @@ const handleGetAllReportByDean = async(req, res) => {
 /* ------------------- End Handle Get All Report By Dean ------------------- */
 
 
+/* ------------------- Handle Create Note ------------------- */
+
+const handleCreateNote = async(req, res) => {
+
+    const superAdminId = req.superadmin.id;
+
+    const { note, reportId, reportStatus } = req.body;
+
+    const { status, status_code, message, data} = await reportNoteService.handleCreateNote({
+        reportId,
+        superAdminId,
+        note,
+        reportStatus
+    });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Create Note ------------------- */
+
+
+/* ------------------- Handle Get Note By Report Id ------------------- */
+
+const handleGetNoteByReportId = async(req, res) => {
+
+    const { reportId } = req.params;
+
+    const { status, status_code, message, data} = await reportNoteService.handleGetNoteByReportId({ reportId });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Get Note By Report Id ------------------- */
+
+
+/* ------------------- Handle Update Note Status By Id ------------------- */
+
+const handleUpdateNoteStatus = async(req, res) => {
+
+    const superAdminId = req.superadmin.id;
+    
+    const { reportStatus, note, reportId } = req.body;
+
+    const { status, status_code, message, data} = await reportNoteService.handleUpdateNoteStatus({ superAdminId, reportStatus, note, reportId });
+
+    res.status(status_code).send({
+        status: status,
+        message: message,
+        data: data,
+    });
+
+};
+
+/* ------------------- End Handle Update Note Status By Id ------------------- */
+
+
 module.exports = {
     handleCreateReport,
     handleGetAllReport,
     handleGetReportById,
     handleUpdateReport,
-    handleGetAllReportByDean
+    handleGetAllReportByDean,
+    handleCreateNote,
+    handleGetNoteByReportId,
+    handleUpdateNoteStatus
 }

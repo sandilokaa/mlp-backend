@@ -147,11 +147,11 @@ class LecturerService {
 
     /* ------------------- Handle Get Detail Lecturer ------------------- */
 
-    static async handleGetDetailLecturer({ lecturerId }){
+    static async handleGetDetailLecturer({ lecturerId, devotionPeriod, assignmentPeriod, academicYear }){
 
         try {
 
-            const getDetailLecture = await lecturerRepository.handleGetDetailLecturer({ lecturerId });
+            const getDetailLecture = await lecturerRepository.handleGetDetailLecturer({ lecturerId, devotionPeriod, assignmentPeriod, academicYear });
 
             return {
                 status: true,
@@ -182,11 +182,11 @@ class LecturerService {
 
     /* ------------------- Handle Get All Lecturer Expertise Group ------------------- */
 
-    static async handleGetAllLecturerExpertiseGroup({ name, groupName }){
+    static async handleGetAllLecturerExpertiseGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear }){
 
         try {
 
-            const getLecturer = await lecturerRepository.handleGetAllLecturerExpertiseGroup({ name, groupName });
+            const getLecturer = await lecturerRepository.handleGetAllLecturerExpertiseGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear });
 
             return {
                 status: true,
@@ -217,11 +217,11 @@ class LecturerService {
 
     /* ------------------- Handle Get Lecturer Expertise Group By Id ------------------- */
 
-    static async handleGetLecturerExpertiseGroupById({ id }){
+    static async handleGetLecturerExpertiseGroupById({ id, devotionPeriod, assignmentPeriod, academicYear }){
 
         try {
 
-            const getLecturerDetail = await lecturerRepository.handleGetLecturerExpertiseGroupById({ id });
+            const getLecturerDetail = await lecturerRepository.handleGetLecturerExpertiseGroupById({ id, devotionPeriod, assignmentPeriod, academicYear });
 
             return {
                 status: true,

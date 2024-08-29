@@ -7,7 +7,9 @@ const handleGetAssignmentByLecturerId = async(req, res) => {
 
     const lecturerId = req.lecturer.id;
 
-    const { status, status_code, message, data} = await lecturerAssignmentService.handleGetAssignmentByLecturerId({ lecturerId });
+    const { assignmentPeriod, academicYear } = req.query
+
+    const { status, status_code, message, data} = await lecturerAssignmentService.handleGetAssignmentByLecturerId({ lecturerId, assignmentPeriod, academicYear });
 
     res.status(status_code).send({
         status: status,
@@ -56,7 +58,9 @@ const handleLecturerCreateAssignment = async(req, res) => {
         assignmentName,
         assignmentType,
         assignmentDescription,
-        assignmentValue
+        assignmentValue,
+        assignmentPeriod,
+        academicYear
     } = req.body;
 
     const { status, status_code, message, data} = await lecturerAssignmentService.handleLecturerCreateAssignment({
@@ -66,7 +70,9 @@ const handleLecturerCreateAssignment = async(req, res) => {
         assignmentType,
         assignmentDescription,
         assignmentValue,
-        assignmentFile
+        assignmentFile,
+        assignmentPeriod,
+        academicYear
     });
 
     res.status(status_code).send({
@@ -99,7 +105,9 @@ const handleLecturerUpdateAssignment = async(req, res) => {
         assignmentName,
         assignmentType,
         assignmentDescription,
-        assignmentValue
+        assignmentValue,
+        assignmentPeriod,
+        academicYear
     } = req.body;
 
     const { status, status_code, message, data} = await lecturerAssignmentService.handleLecturerUpdateAssignment({
@@ -110,7 +118,9 @@ const handleLecturerUpdateAssignment = async(req, res) => {
         assignmentType,
         assignmentDescription,
         assignmentValue,
-        assignmentFile
+        assignmentFile,
+        assignmentPeriod,
+        academicYear
     });
 
     res.status(status_code).send({

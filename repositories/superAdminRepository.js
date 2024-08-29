@@ -10,7 +10,7 @@ const {
     Devotions,
     Assignments
 } = require("../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 class SuperAdminRepository {
 
@@ -229,7 +229,7 @@ class SuperAdminRepository {
 
     /* ------------------- Handle Get All Lecturer Group ------------------- */
 
-    static async handleGetAllLecturerGroup({ name, groupName }) {
+    static async handleGetAllLecturerGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear }) {
 
         const query = {
             where: {},
@@ -258,14 +258,30 @@ class SuperAdminRepository {
             lecturerDetails.map(async detail => {
                 const lecturerId = detail.id;
     
+                const devotionFilter = { lecturerId };
+                const assignmentFilter = { lecturerId };
+
+                if (devotionPeriod) {
+                    devotionFilter.devotionPeriod = devotionPeriod;
+                }
+                
+                if (assignmentPeriod) {
+                    assignmentFilter.assignmentPeriod = assignmentPeriod;
+                }
+
+                if (academicYear) {
+                    devotionFilter.academicYear = academicYear;
+                    assignmentFilter.academicYear = academicYear;
+                }
+    
                 const [devotionsSum, devotionsCount] = await Promise.all([
-                    Devotions.sum('devotionValue', { where: { lecturerId } }),
-                    Devotions.count({ where: { lecturerId } }),
+                    Devotions.sum('devotionValue', { where: devotionFilter }),
+                    Devotions.count({ where: devotionFilter }),
                 ]);
     
                 const [assignmentsSum, assignmentsCount] = await Promise.all([
-                    Assignments.sum('assignmentValue', { where: { lecturerId } }),
-                    Assignments.count({ where: { lecturerId } }),
+                    Assignments.sum('assignmentValue', { where: assignmentFilter }),
+                    Assignments.count({ where: assignmentFilter }),
                 ]);
     
                 const totalSum = devotionsSum + assignmentsSum;
@@ -289,16 +305,32 @@ class SuperAdminRepository {
 
     /* ------------------- Handle Get Lecture Detail ------------------- */
 
-    static async handleGetLecturerDetail({ id }){
+    static async handleGetLecturerDetail({ id, devotionPeriod, assignmentPeriod, academicYear }){
+
+        const devotionFilter = { lecturerId: id };
+        const assignmentFilter = { lecturerId: id };
+
+        if (devotionPeriod) {
+            devotionFilter.devotionPeriod = devotionPeriod;
+        }
+    
+        if (assignmentPeriod) {
+            assignmentFilter.assignmentPeriod = assignmentPeriod;
+        }
+    
+        if (academicYear) {
+            devotionFilter.academicYear = academicYear;
+            assignmentFilter.academicYear = academicYear;
+        }
 
         const [devotionsSum, devotionsCount] = await Promise.all([
-            Devotions.sum('devotionValue', { where: { id } }),
-            Devotions.count({ where: { id } }),
+            Devotions.sum('devotionValue', { where: devotionFilter }),
+            Devotions.count({ where: devotionFilter }),
         ]);
 
         const [assignmentsSum, assignmentsCount] = await Promise.all([
-            Assignments.sum('assignmentValue', { where: { id } }),
-            Assignments.count({ where: { id } }),
+            Assignments.sum('assignmentValue', { where: assignmentFilter }),
+            Assignments.count({ where: assignmentFilter }),
         ]);
 
         const totalSum = devotionsSum + assignmentsSum;
@@ -327,11 +359,13 @@ class SuperAdminRepository {
                 {
                     model: Devotions,
                     attributes: ['id', 'devotionName', 'devotionValue'],
+                    where: devotionFilter,
                     limit: 3
                 },
                 {
                     model: Assignments,
                     attributes: ['id', 'assignmentName', 'assignmentValue'],
+                    where: assignmentFilter,
                     limit: 3
                 }
             ]

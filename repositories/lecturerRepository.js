@@ -6,7 +6,7 @@ const {
     Devotions,
     Assignments
 } = require("../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 class LecturerRepository {
 
@@ -146,16 +146,32 @@ class LecturerRepository {
 
     /* ------------------- Handle Get Detail Lecturer ------------------- */
 
-    static async handleGetDetailLecturer({ lecturerId }) {
+    static async handleGetDetailLecturer({ lecturerId, devotionPeriod, assignmentPeriod, academicYear }) {
+
+        const devotionFilter = { lecturerId };
+        const assignmentFilter = { lecturerId };
+
+        if (devotionPeriod) {
+            devotionFilter.devotionPeriod = devotionPeriod;
+        }
+    
+        if (assignmentPeriod) {
+            assignmentFilter.assignmentPeriod = assignmentPeriod;
+        }
+    
+        if (academicYear) {
+            devotionFilter.academicYear = academicYear;
+            assignmentFilter.academicYear = academicYear;
+        }
 
         const [devotionsSum, devotionsCount] = await Promise.all([
-            Devotions.sum('devotionValue', { where: { lecturerId } }),
-            Devotions.count({ where: { lecturerId } }),
+            Devotions.sum('devotionValue', { where: devotionFilter }),
+            Devotions.count({ where: devotionFilter }),
         ]);
-
+        
         const [assignmentsSum, assignmentsCount] = await Promise.all([
-            Assignments.sum('assignmentValue', { where: { lecturerId } }),
-            Assignments.count({ where: { lecturerId } }),
+            Assignments.sum('assignmentValue', { where: assignmentFilter }),
+            Assignments.count({ where: assignmentFilter }),
         ]);
 
         const totalSum = devotionsSum + assignmentsSum;
@@ -180,7 +196,7 @@ class LecturerRepository {
                 {
                     model: LecturerEducations,
                     attributes: ['bachelor', 'magister', 'doctor']
-                }
+                },
             ]
         };
 
@@ -199,8 +215,7 @@ class LecturerRepository {
 
     /* ------------------- Handle Get All Lecturer Expertise Group ------------------- */
 
-    static async handleGetAllLecturerExpertiseGroup({ name, groupName }) {
-
+    static async handleGetAllLecturerExpertiseGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear }) {
         const query = {
             where: {},
             attributes: ['id'],
@@ -212,7 +227,7 @@ class LecturerRepository {
                 },
             ],
         };
-
+    
         if (name && groupName) {
             query.include[0].where.name = { [Op.like]: `%${name}%` };
             query.include[0].where.groupName = { [Op.like]: `%${groupName}%` };
@@ -223,19 +238,35 @@ class LecturerRepository {
         }
     
         let lecturerDetails = await LecturerDetails.findAll(query);
-
+    
         lecturerDetails = await Promise.all(
             lecturerDetails.map(async detail => {
                 const lecturerId = detail.id;
     
+                const devotionFilter = { lecturerId };
+                const assignmentFilter = { lecturerId };
+
+                if (devotionPeriod) {
+                    devotionFilter.devotionPeriod = devotionPeriod;
+                }
+                
+                if (assignmentPeriod) {
+                    assignmentFilter.assignmentPeriod = assignmentPeriod;
+                }
+
+                if (academicYear) {
+                    devotionFilter.academicYear = academicYear;
+                    assignmentFilter.academicYear = academicYear;
+                }
+    
                 const [devotionsSum, devotionsCount] = await Promise.all([
-                    Devotions.sum('devotionValue', { where: { lecturerId } }),
-                    Devotions.count({ where: { lecturerId } }),
+                    Devotions.sum('devotionValue', { where: devotionFilter }),
+                    Devotions.count({ where: devotionFilter }),
                 ]);
     
                 const [assignmentsSum, assignmentsCount] = await Promise.all([
-                    Assignments.sum('assignmentValue', { where: { lecturerId } }),
-                    Assignments.count({ where: { lecturerId } }),
+                    Assignments.sum('assignmentValue', { where: assignmentFilter }),
+                    Assignments.count({ where: assignmentFilter }),
                 ]);
     
                 const totalSum = devotionsSum + assignmentsSum;
@@ -259,28 +290,42 @@ class LecturerRepository {
 
     /* ------------------- Handle Get Lecturer Expertise Group By Id ------------------- */
 
-    static async handleGetLecturerExpertiseGroupById({ id }) {
+    static async handleGetLecturerExpertiseGroupById({ id, devotionPeriod, assignmentPeriod, academicYear }) {
 
+        const devotionFilter = { lecturerId: id };
+        const assignmentFilter = { lecturerId: id };
+
+        if (devotionPeriod) {
+            devotionFilter.devotionPeriod = devotionPeriod;
+        }
+    
+        if (assignmentPeriod) {
+            assignmentFilter.assignmentPeriod = assignmentPeriod;
+        }
+    
+        if (academicYear) {
+            devotionFilter.academicYear = academicYear;
+            assignmentFilter.academicYear = academicYear;
+        }
+    
         const [devotionsSum, devotionsCount] = await Promise.all([
-            Devotions.sum('devotionValue', { where: { id } }),
-            Devotions.count({ where: { id } }),
+            Devotions.sum('devotionValue', { where: devotionFilter }),
+            Devotions.count({ where: devotionFilter }),
         ]);
-
+    
         const [assignmentsSum, assignmentsCount] = await Promise.all([
-            Assignments.sum('assignmentValue', { where: { id } }),
-            Assignments.count({ where: { id } }),
+            Assignments.sum('assignmentValue', { where: assignmentFilter }),
+            Assignments.count({ where: assignmentFilter }),
         ]);
-
+    
         const totalSum = devotionsSum + assignmentsSum;
         const totalCount = devotionsCount + assignmentsCount;
-
+    
         const averageValue = totalCount ? totalSum / totalCount : 0;
-
+    
         const query = {
-            where: {id},
-            attributes: [
-                'lecturerId',
-            ],
+            where: { id },
+            attributes: ['lecturerId'],
             include: [
                 {
                     model: Lecturers,
@@ -297,24 +342,25 @@ class LecturerRepository {
                 {
                     model: Devotions,
                     attributes: ['id', 'devotionName', 'devotionValue'],
+                    where: devotionFilter,
                     limit: 3
                 },
                 {
                     model: Assignments,
                     attributes: ['id', 'assignmentName', 'assignmentValue'],
+                    where: assignmentFilter,
                     limit: 3
                 }
             ]
         };
-
+    
         const getDetailLecturer = await LecturerDetails.findOne(query);
-
+    
         if (getDetailLecturer) {
             getDetailLecturer.dataValues.averageValue = averageValue;
         }
-
+    
         return getDetailLecturer;
-
     };
 
     /* ------------------- End Handle Get Lecturer Expertise Group By Id ------------------- */

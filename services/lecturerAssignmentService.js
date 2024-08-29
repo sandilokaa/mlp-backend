@@ -6,11 +6,11 @@ class LecturerAssignmentService{
 
     /* ------------------- Handle Get Assignment By Lecturer Id ------------------- */
 
-    static async handleGetAssignmentByLecturerId({ lecturerId }){
+    static async handleGetAssignmentByLecturerId({ lecturerId, assignmentPeriod, academicYear }){
 
         try {
 
-            const getAssignment = await lecturerAssignmentRepository.handleGetAssignmentByLecturerId({ lecturerId });
+            const getAssignment = await lecturerAssignmentRepository.handleGetAssignmentByLecturerId({ lecturerId, assignmentPeriod, academicYear });
 
             return {
                 status: true,
@@ -83,7 +83,9 @@ class LecturerAssignmentService{
         assignmentType,
         assignmentDescription,
         assignmentValue,
-        assignmentFile
+        assignmentFile,
+        assignmentPeriod,
+        academicYear
     }) {
 
         try {
@@ -122,6 +124,28 @@ class LecturerAssignmentService{
                     },
                 };
             }
+            
+            if (!assignmentPeriod) {
+                return {
+                    status: false,
+                    status_code: 400,
+                    message: "Period is required!",
+                    data: {
+                        assignmentCreated: null,
+                    },
+                };
+            }
+            
+            if (!academicYear) {
+                return {
+                    status: false,
+                    status_code: 400,
+                    message: "Academic year is required!",
+                    data: {
+                        assignmentCreated: null,
+                    },
+                };
+            }
 
             // ------------------------- End Payload Validation ------------------------- //
 
@@ -134,7 +158,9 @@ class LecturerAssignmentService{
                 assignmentType,
                 assignmentDescription,
                 assignmentValue,
-                assignmentFile
+                assignmentFile,
+                assignmentPeriod,
+                academicYear
             });
 
             return {
@@ -174,7 +200,9 @@ class LecturerAssignmentService{
         assignmentType,
         assignmentDescription,
         assignmentValue,
-        assignmentFile
+        assignmentFile,
+        assignmentPeriod,
+        academicYear
     }) {
 
         try {
@@ -206,6 +234,14 @@ class LecturerAssignmentService{
                 if (!assignmentValue){
                     assignmentValue = getAssignment.assignmentValue;
                 }
+                
+                if (!assignmentPeriod){
+                    assignmentPeriod = getAssignment.assignmentPeriod;
+                }
+                
+                if (!academicYear){
+                    academicYear = getAssignment.academicYear;
+                }
 
                 if (!assignmentFile){
                     assignmentFile = getAssignment.assignmentFile;
@@ -223,7 +259,9 @@ class LecturerAssignmentService{
                 assignmentType,
                 assignmentDescription,
                 assignmentValue,
-                assignmentFile
+                assignmentFile,
+                assignmentPeriod,
+                academicYear
             });
 
             return {

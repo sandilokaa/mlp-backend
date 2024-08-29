@@ -1,10 +1,11 @@
 const { Assignments, Lecturers } = require("../models");
+const { Op } = require("sequelize");
 
 class LecturerAssignmentRepository{
 
     /* ------------------- Handle Get Assignment By Lecturer Id ------------------- */
 
-    static async handleGetAssignmentByLecturerId({ lecturerId }) {
+    static async handleGetAssignmentByLecturerId({ lecturerId, assignmentPeriod, academicYear }) {
 
         const query = {
             where: { lecturerId },
@@ -15,6 +16,33 @@ class LecturerAssignmentRepository{
                 'assignmentValue'
             ]
         };
+
+        if (assignmentPeriod && academicYear) {
+            
+            const searchByPeriod = await Assignments.findAll({
+                where: {
+                    [Op.and]: [
+                        { assignmentPeriod: assignmentPeriod },
+                        { academicYear: academicYear },
+                    ]
+                },
+                attributes: [
+                    'id',
+                    'assignmentName',
+                    'assignmentType',
+                    'assignmentValue'
+                ],
+                include: [
+                    {
+                        model: Lecturers,
+                        attributes: ['name', 'email']    
+                    }
+                ],
+                limit: 10
+            });
+
+            return searchByPeriod;
+        }
 
         const getAssignment = await Assignments.findAll(query);
 
@@ -38,7 +66,9 @@ class LecturerAssignmentRepository{
                 'assignmentType',
                 'assignmentValue',
                 'assignmentDescription',
-                'assignmentFile'
+                'assignmentFile',
+                'assignmentPeriod',
+                'academicYear'
             ],
             include: [
                 {
@@ -66,7 +96,9 @@ class LecturerAssignmentRepository{
         assignmentType,
         assignmentDescription,
         assignmentValue,
-        assignmentFile
+        assignmentFile,
+        assignmentPeriod,
+        academicYear
     }) {
 
         const assignmentCreated = await  Assignments.create({
@@ -76,7 +108,9 @@ class LecturerAssignmentRepository{
             assignmentType,
             assignmentDescription,
             assignmentValue,
-            assignmentFile
+            assignmentFile,
+            assignmentPeriod,
+            academicYear
         });
 
         return assignmentCreated;
@@ -94,7 +128,9 @@ class LecturerAssignmentRepository{
         assignmentType,
         assignmentDescription,
         assignmentValue,
-        assignmentFile
+        assignmentFile,
+        assignmentPeriod,
+        academicYear
     }) {
 
         const updatedAssignment = await Assignments.update({
@@ -102,7 +138,9 @@ class LecturerAssignmentRepository{
             assignmentType,
             assignmentDescription,
             assignmentValue,
-            assignmentFile
+            assignmentFile,
+            assignmentPeriod,
+            academicYear
         }, {
             where: { id }
         });

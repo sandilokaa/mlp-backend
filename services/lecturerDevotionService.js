@@ -7,11 +7,11 @@ class LecturerDevotionService {
 
     /* ------------------- Handle Get Devotion By Lecturer Id ------------------- */
 
-        static async handleGetDevotionByLecturerId({ lecturerId }){
+        static async handleGetDevotionByLecturerId({ lecturerId, devotionPeriod, academicYear }){
 
             try {
     
-                const getDevotion = await lecturerDevotionRepository.handleGetDevotionByLecturerId({ lecturerId });
+                const getDevotion = await lecturerDevotionRepository.handleGetDevotionByLecturerId({ lecturerId, devotionPeriod, academicYear });
     
                 return {
                     status: true,

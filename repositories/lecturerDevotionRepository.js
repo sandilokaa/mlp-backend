@@ -2,6 +2,7 @@ const {
     Devotions,
     Lecturers
 } = require("../models");
+const { Op } = require("sequelize");
 
 
 class LecturerDevotionRepository {
@@ -9,7 +10,7 @@ class LecturerDevotionRepository {
 
     /* ------------------- Handle Get Devotion By Lecturer Id ------------------- */
 
-    static async handleGetDevotionByLecturerId({ lecturerId }) {
+    static async handleGetDevotionByLecturerId({ lecturerId, devotionPeriod, academicYear }) {
 
         const query = {
             where: { lecturerId },
@@ -20,6 +21,33 @@ class LecturerDevotionRepository {
                 'devotionValue'
             ]
         };
+
+        if (devotionPeriod && academicYear) {
+            
+            const searchByPeriod = await Devotions.findAll({
+                where: {
+                    [Op.and]: [
+                        { devotionPeriod: devotionPeriod },
+                        { academicYear: academicYear },
+                    ]
+                },
+                attributes: [
+                    'id',
+                    'devotionName',
+                    'devotionRole',
+                    'devotionValue',
+                ],
+                include: [
+                    {
+                        model: Lecturers,
+                        attributes: ['name', 'email']    
+                    }
+                ],
+                limit: 10
+            });
+
+            return searchByPeriod;
+        }
 
         const getDevotion = await Devotions.findAll(query);
 
@@ -53,7 +81,8 @@ class LecturerDevotionRepository {
                     attributes: ['name', 'groupName']
                 },
             ]
-        }
+        };
+        
 
         const getDevotion = Devotions.findOne(query);
 

@@ -33,7 +33,9 @@ module.exports = (sequelize, DataTypes) => {
     assignmentType: DataTypes.STRING,
     assignmentDescription: DataTypes.TEXT,
     assignmentFile: DataTypes.TEXT,
-    assignmentValue: DataTypes.STRING
+    assignmentValue: DataTypes.STRING,
+    assignmentPeriod: DataTypes.STRING,
+    academicYear: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Assignments',

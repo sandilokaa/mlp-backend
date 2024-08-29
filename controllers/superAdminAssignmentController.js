@@ -6,9 +6,9 @@ const handleGetAssignmentBySuperAdminId = async(req, res) => {
 
     const superAdminId = req.superadmin.id;
 
-    const { assignmentName } = req.query;
+    const { assignmentName, assignmentPeriod, academicYear } = req.query;
 
-    const { status, status_code, message, data} = await superAdminAssignmentService.handleGetAssignmentBySuperAdminId({ superAdminId, assignmentName });
+    const { status, status_code, message, data} = await superAdminAssignmentService.handleGetAssignmentBySuperAdminId({ superAdminId, assignmentName, assignmentPeriod, academicYear });
 
     res.status(status_code).send({
         status: status,

@@ -6,9 +6,9 @@ const handleGetDevotionBySuperAdminId = async(req, res) => {
 
     const superAdminId = req.superadmin.id;
 
-    const { devotionName } = req.query;
+    const { devotionName, devotionPeriod, academicYear } = req.query;
 
-    const { status, status_code, message, data} = await superAdminDevotionService.handleGetDevotionBySuperAdminId({ superAdminId, devotionName });
+    const { status, status_code, message, data} = await superAdminDevotionService.handleGetDevotionBySuperAdminId({ superAdminId, devotionName, devotionPeriod, academicYear });
 
     res.status(status_code).send({
         status: status,
