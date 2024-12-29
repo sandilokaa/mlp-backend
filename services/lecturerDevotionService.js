@@ -85,7 +85,6 @@ class LecturerDevotionService {
         devotionPeriod,
         academicYear,
         devotionDescription,
-        devotionValue,
         devotionFile
     }) {
 
@@ -160,7 +159,6 @@ class LecturerDevotionService {
                 devotionPeriod,
                 academicYear,
                 devotionDescription,
-                devotionValue,
                 devotionFile
             });
 
@@ -202,7 +200,6 @@ class LecturerDevotionService {
         devotionPeriod,
         academicYear,
         devotionDescription,
-        devotionValue,
         devotionFile
     }) {
 
@@ -239,10 +236,6 @@ class LecturerDevotionService {
                 if (!devotionDescription){
                     devotionDescription = getDevotion.devotionDescription;
                 }
-                
-                if (!devotionValue){
-                    devotionValue = getDevotion.devotionValue;
-                }
 
                 if (!devotionFile){
                     devotionFile = getDevotion.devotionFile;
@@ -261,7 +254,6 @@ class LecturerDevotionService {
                 devotionPeriod,
                 academicYear,
                 devotionDescription,
-                devotionValue,
                 devotionFile
             });
 

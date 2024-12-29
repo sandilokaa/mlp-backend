@@ -146,38 +146,7 @@ class LecturerRepository {
 
     /* ------------------- Handle Get Detail Lecturer ------------------- */
 
-    static async handleGetDetailLecturer({ lecturerId, devotionPeriod, assignmentPeriod, academicYear }) {
-
-        const devotionFilter = { lecturerId };
-        const assignmentFilter = { lecturerId };
-
-        if (devotionPeriod) {
-            devotionFilter.devotionPeriod = devotionPeriod;
-        }
-    
-        if (assignmentPeriod) {
-            assignmentFilter.assignmentPeriod = assignmentPeriod;
-        }
-    
-        if (academicYear) {
-            devotionFilter.academicYear = academicYear;
-            assignmentFilter.academicYear = academicYear;
-        }
-
-        const [devotionsSum, devotionsCount] = await Promise.all([
-            Devotions.sum('devotionValue', { where: devotionFilter }),
-            Devotions.count({ where: devotionFilter }),
-        ]);
-        
-        const [assignmentsSum, assignmentsCount] = await Promise.all([
-            Assignments.sum('assignmentValue', { where: assignmentFilter }),
-            Assignments.count({ where: assignmentFilter }),
-        ]);
-
-        const totalSum = devotionsSum + assignmentsSum;
-        const totalCount = devotionsCount + assignmentsCount;
-
-        const averageValue = totalCount ? totalSum / totalCount : 0;
+    static async handleGetDetailLecturer({ lecturerId }) {
 
         const query = {
             where: {lecturerId},
@@ -196,15 +165,11 @@ class LecturerRepository {
                 {
                     model: LecturerEducations,
                     attributes: ['bachelor', 'magister', 'doctor']
-                },
+                }
             ]
         };
 
         const getDetailLecturer = await LecturerDetails.findOne(query);
-
-        if (getDetailLecturer) {
-            getDetailLecturer.dataValues.averageValue = averageValue;
-        }
 
         return getDetailLecturer;
 
@@ -259,24 +224,8 @@ class LecturerRepository {
                     assignmentFilter.academicYear = academicYear;
                 }
     
-                const [devotionsSum, devotionsCount] = await Promise.all([
-                    Devotions.sum('devotionValue', { where: devotionFilter }),
-                    Devotions.count({ where: devotionFilter }),
-                ]);
-    
-                const [assignmentsSum, assignmentsCount] = await Promise.all([
-                    Assignments.sum('assignmentValue', { where: assignmentFilter }),
-                    Assignments.count({ where: assignmentFilter }),
-                ]);
-    
-                const totalSum = devotionsSum + assignmentsSum;
-                const totalCount = devotionsCount + assignmentsCount;
-    
-                const averageValue = totalCount ? totalSum / totalCount : 0;
-    
                 return {
                     ...detail.dataValues,
-                    averageValue
                 };
             })
         );
@@ -308,21 +257,6 @@ class LecturerRepository {
             assignmentFilter.academicYear = academicYear;
         }
     
-        const [devotionsSum, devotionsCount] = await Promise.all([
-            Devotions.sum('devotionValue', { where: devotionFilter }),
-            Devotions.count({ where: devotionFilter }),
-        ]);
-    
-        const [assignmentsSum, assignmentsCount] = await Promise.all([
-            Assignments.sum('assignmentValue', { where: assignmentFilter }),
-            Assignments.count({ where: assignmentFilter }),
-        ]);
-    
-        const totalSum = devotionsSum + assignmentsSum;
-        const totalCount = devotionsCount + assignmentsCount;
-    
-        const averageValue = totalCount ? totalSum / totalCount : 0;
-    
         const query = {
             where: { id },
             attributes: ['lecturerId'],
@@ -341,13 +275,13 @@ class LecturerRepository {
                 },
                 {
                     model: Devotions,
-                    attributes: ['id', 'devotionName', 'devotionValue'],
+                    attributes: ['id', 'devotionName', 'devotionPeriod'],
                     where: devotionFilter,
                     limit: 3
                 },
                 {
                     model: Assignments,
-                    attributes: ['id', 'assignmentName', 'assignmentValue'],
+                    attributes: ['id', 'assignmentName', 'assignmentPeriod'],
                     where: assignmentFilter,
                     limit: 3
                 }
@@ -355,10 +289,6 @@ class LecturerRepository {
         };
     
         const getDetailLecturer = await LecturerDetails.findOne(query);
-    
-        if (getDetailLecturer) {
-            getDetailLecturer.dataValues.averageValue = averageValue;
-        }
     
         return getDetailLecturer;
     };

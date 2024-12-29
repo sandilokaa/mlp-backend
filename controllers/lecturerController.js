@@ -62,9 +62,7 @@ const handleGetDetailLecturer = async(req, res) => {
 
     const lecturerId = req.lecturer.id;
 
-    const { devotionPeriod, assignmentPeriod, academicYear } = req.query;
-
-    const { status, status_code, message, data} = await lecturerService.handleGetDetailLecturer({ lecturerId, devotionPeriod, assignmentPeriod, academicYear });
+    const { status, status_code, message, data} = await lecturerService.handleGetDetailLecturer({ lecturerId });
 
     res.status(status_code).send({
         status: status,
@@ -81,9 +79,9 @@ const handleGetDetailLecturer = async(req, res) => {
 
 const handleGetAllLecturerExpertiseGroup = async(req, res) => {
     
-    const { name, groupName, devotionPeriod, assignmentPeriod, academicYear } = req.query;
+    const { name, groupName, devotionPeriod, assignmentPeriod, academicYear  } = req.query;
 
-    const { status, status_code, message, data} = await lecturerService.handleGetAllLecturerExpertiseGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear });
+    const { status, status_code, message, data} = await lecturerService.handleGetAllLecturerExpertiseGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear  });
 
     res.status(status_code).send({
         status: status,
@@ -104,7 +102,7 @@ const handleGetLecturerExpertiseGroupById = async(req, res) => {
 
     const { devotionPeriod, assignmentPeriod, academicYear } = req.query;
 
-    const { status, status_code, message, data} = await lecturerService.handleGetLecturerExpertiseGroupById({ id, devotionPeriod, assignmentPeriod, academicYear  });
+    const { status, status_code, message, data} = await lecturerService.handleGetLecturerExpertiseGroupById({ id, devotionPeriod, assignmentPeriod, academicYear });
 
     res.status(status_code).send({
         status: status,

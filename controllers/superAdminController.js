@@ -107,9 +107,9 @@ const handleCreateLecturer = async(req, res) => {
 
 const handleGetAllLecturerGroup = async(req, res) => {
 
-    const { name, groupName, devotionPeriod, assignmentPeriod, academicYear } = req.query;
+    const { name, groupName, devotionPeriod, assignmentPeriod, academicYear  } = req.query;
 
-    const { status, status_code, message, data} = await superAdminService.handleGetAllLecturerGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear });
+    const { status, status_code, message, data} = await superAdminService.handleGetAllLecturerGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear  });
 
     res.status(status_code).send({
         status: status,

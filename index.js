@@ -27,13 +27,19 @@ app.use("/storages", express.static(path.join(__dirname, "storages")));
 const authController = require("./controllers/authController");
 
 const superAdminController = require("./controllers/superAdminController");
-const superAdminGiveValueController = require("./controllers/superAdminGiveValueController");
 const superAdminDevotionController = require("./controllers/superAdminDevotionController");
-const superAdminAssignmentController = require("./controllers/superAdminAssignmentController");
+const superAdminResearchController = require("./controllers/superAdminResearchController");
+const superAdminPublicationController = require("./controllers/superAdminPublicationController");
+const superAdminPatentController = require("./controllers/superAdminPatentController");
+const superAdminIPRightController = require("./controllers/superAdminIPRightController");
+const superAdminDashboardController = require("./controllers/superAdminDashboardController");
 
 const lecturerController = require("./controllers/lecturerController");
 const lecturerDevotionController = require("./controllers/lecturerDevotionController");
-const lecturerAssignmentController = require("./controllers/lecturerAssignmentController");
+const lecturerResearchController = require("./controllers/lecturerResearchController");
+const lecturerPublicationController = require("./controllers/lecturerPublicationController");
+const lecturerPatentController = require("./controllers/lecturerPatentController");
+const lecturerIPRightController = require("./controllers/lecturerIPRightController");
 
 const reportNoteController = require("./controllers/reportNoteController");
 
@@ -74,12 +80,25 @@ app.delete('/api/v1/superadmin/lecturer/:id', middleware.authenticateSuperAdmin,
 app.get('/api/v1/superadmin/lecturer', middleware.authenticateSuperAdmin, superAdminController.handleGetAllLecturerGroup);
 
 app.get('/api/v1/superadmin/:superAdminId/devotion', middleware.authenticateSuperAdmin, superAdminDevotionController.handleGetDevotionBySuperAdminId);
-app.get('/api/v1/superadmin/devotion/:id', middleware.authenticateLecturer, superAdminDevotionController.handleGetDevotionById);
-app.put('/api/v1/superadmin/devotion/value/:id', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminGiveValueController.handleUpdateDevotionValue);
+app.get('/api/v1/superadmin/devotion/:id', middleware.authenticateSuperAdmin, superAdminDevotionController.handleGetDevotionById);
 
-app.get('/api/v1/superadmin/:superAdminId/assignment', middleware.authenticateSuperAdmin, superAdminAssignmentController.handleGetAssignmentBySuperAdminId);
-app.get('/api/v1/superadmin/assignment/:id', middleware.authenticateLecturer, superAdminAssignmentController.handleGetAssignmentById);
-app.put('/api/v1/superadmin/assignment/value/:id', middleware.authenticateSuperAdmin, middleware.authorizeSuperAdmin(ROLES.EXPERTISE_GROUP), superAdminGiveValueController.handleUpdateAssignmentValue);
+app.get('/api/v1/superadmin/:superAdminId/research', middleware.authenticateSuperAdmin, superAdminResearchController.handleGetResearchBySuperAdminId);
+app.get('/api/v1/superadmin/research/:id', middleware.authenticateSuperAdmin, superAdminResearchController.handleGetResearchById);
+
+app.get('/api/v1/superadmin/:superAdminId/publication', middleware.authenticateSuperAdmin, superAdminPublicationController.handleGetPublicationBySuperAdminId);
+app.get('/api/v1/superadmin/publication/:id', middleware.authenticateSuperAdmin, superAdminPublicationController.handleGetPublicationById);
+
+app.get('/api/v1/superadmin/:superAdminId/patent', middleware.authenticateSuperAdmin, superAdminPatentController.handleGetPatentBySuperAdminId);
+app.get('/api/v1/superadmin/patent/:id', middleware.authenticateSuperAdmin, superAdminPatentController.handleGetPatentById);
+
+app.get('/api/v1/superadmin/:superAdminId/ipright', middleware.authenticateSuperAdmin, superAdminIPRightController.handleGetIPRightBySuperAdminId);
+app.get('/api/v1/superadmin/ipright/:id', middleware.authenticateSuperAdmin, superAdminIPRightController.handleGetIPRightById);
+
+app.get('/api/v1/superadmin/dashboard/publications', middleware.authenticateSuperAdmin, superAdminDashboardController.handleGetAllPublicationDashboard);
+app.get('/api/v1/superadmin/dashboard/patents', middleware.authenticateSuperAdmin, superAdminDashboardController.handleGetAllPatentDashboard);
+app.get('/api/v1/superadmin/dashboard/iprights', middleware.authenticateSuperAdmin, superAdminDashboardController.handleGetAllIPRightDashboard);
+app.get('/api/v1/superadmin/dashboard/researchs', middleware.authenticateSuperAdmin, superAdminDashboardController.handleGetAllResearchDashboard);
+app.get('/api/v1/superadmin/dashboard/devotions', middleware.authenticateSuperAdmin, superAdminDashboardController.handleGetAllDevotionDashboard);
 
 app.get('/api/v1/superadmin/:superAdminId/report', middleware.authenticateSuperAdmin, reportNoteController.handleGetAllReport);
 app.get('/api/v1/superadmin/report/:id', middleware.authenticateSuperAdmin, reportNoteController.handleGetReportById);
@@ -108,11 +127,30 @@ app.post('/api/v1/lecturer/devotion', middleware.authenticateLecturer, middlewar
 app.put('/api/v1/lecturer/devotion/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('devotionFile'), lecturerDevotionController.handleLecturerUpdateDevotion);
 app.delete('/api/v1/lecturer/devotion/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerDevotionController.handleLecturerDeleteDevotion);
 
-app.get('/api/v1/lecturer/assignment/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerAssignmentController.handleGetAssignmentById);
-app.get('/api/v1/lecturer/assignment', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerAssignmentController.handleGetAssignmentByLecturerId);
-app.post('/api/v1/lecturer/assignment', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('assignmentFile'), lecturerAssignmentController.handleLecturerCreateAssignment);
-app.put('/api/v1/lecturer/assignment/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('assignmentFile'), lecturerAssignmentController.handleLecturerUpdateAssignment);
-app.delete('/api/v1/lecturer/assignment/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerAssignmentController.handleLecturerDeleteAssignment);
+app.get('/api/v1/lecturer/research/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerResearchController.handleGetResearchById);
+app.get('/api/v1/lecturer/research', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerResearchController.handleGetResearchByLecturerId);
+app.post('/api/v1/lecturer/research', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('researchFile'), lecturerResearchController.handleLecturerCreateResearch);
+app.put('/api/v1/lecturer/research/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('researchFile'), lecturerResearchController.handleLecturerUpdateResearch);
+app.delete('/api/v1/lecturer/research/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerResearchController.handleLecturerDeleteResearch);
+
+app.get('/api/v1/lecturer/publication/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerPublicationController.handleGetPublicationById);
+app.get('/api/v1/lecturer/publication', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerPublicationController.handleGetPublicationByLecturerId);
+app.post('/api/v1/lecturer/publication', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('publicationFile'), lecturerPublicationController.handleLecturerCreatePublication);
+app.put('/api/v1/lecturer/publication/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('publicationFile'), lecturerPublicationController.handleLecturerUpdatePublication);
+app.delete('/api/v1/lecturer/publication/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerPublicationController.handleLecturerDeletePublication);
+
+
+app.get('/api/v1/lecturer/patent/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerPatentController.handleGetPatentById);
+app.get('/api/v1/lecturer/patent', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerPatentController.handleGetPatentByLecturerId);
+app.post('/api/v1/lecturer/patent', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('patentFile'), lecturerPatentController.handleLecturerCreatePatent);
+app.put('/api/v1/lecturer/patent/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('patentFile'), lecturerPatentController.handleLecturerUpdatePatent);
+app.delete('/api/v1/lecturer/patent/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerPatentController.handleLecturerDeletePatent);
+
+app.get('/api/v1/lecturer/ipright/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerIPRightController.handleGetIPRightById);
+app.get('/api/v1/lecturer/ipright', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerIPRightController.handleGetIPRightByLecturerId);
+app.post('/api/v1/lecturer/ipright', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('ipRightFile'), lecturerIPRightController.handleLecturerCreateIPRight);
+app.put('/api/v1/lecturer/ipright/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), fileUpload.single('ipRightFile'), lecturerIPRightController.handleLecturerUpdateIPRight);
+app.delete('/api/v1/lecturer/ipright/:id', middleware.authenticateLecturer, middleware.authorizeLecturer(ROLES.LECTURER), lecturerIPRightController.handleLecturerDeleteIPRight);
 
 /* -------------- End Lecturer Endpoint -------------- */
 

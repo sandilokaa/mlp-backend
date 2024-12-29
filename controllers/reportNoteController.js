@@ -13,7 +13,7 @@ const handleCreateReport = async(req, res) => {
         reportFile = req.file.path;
     }
 
-    const { reportName, reportPeriod, academicYear, reportStatus } = req.body;
+    const { reportName, reportPeriod, academicYear, reportStatus, reportType } = req.body;
 
     const { status, status_code, message, data} = await reportNoteService.handleCreateReport({ 
         superAdminId,
@@ -21,6 +21,7 @@ const handleCreateReport = async(req, res) => {
         reportPeriod,
         academicYear,
         reportStatus,
+        reportType,
         reportFile
     });
 
@@ -91,7 +92,7 @@ const handleUpdateReport = async(req, res) => {
         reportFile = req.file.path;
     }
 
-    const { reportName, reportPeriod, academicYear, reportStatus } = req.body;
+    const { reportName, reportPeriod, academicYear, reportStatus, reportType } = req.body;
 
     const { status, status_code, message, data} = await reportNoteService.handleUpdateReport({
         id,
@@ -100,6 +101,7 @@ const handleUpdateReport = async(req, res) => {
         reportPeriod,
         academicYear,
         reportFile,
+        reportType,
         reportStatus
     });
 

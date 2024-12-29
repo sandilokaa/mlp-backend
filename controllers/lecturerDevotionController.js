@@ -59,8 +59,7 @@ const handleLecturerCreateDevotion = async(req, res) => {
         devotionRole,
         devotionPeriod,
         academicYear,
-        devotionDescription,
-        devotionValue
+        devotionDescription
     } = req.body;
 
     const { status, status_code, message, data} = await lecturerDevotionService.handleLecturerCreateDevotion({
@@ -71,7 +70,6 @@ const handleLecturerCreateDevotion = async(req, res) => {
         devotionPeriod,
         academicYear,
         devotionDescription,
-        devotionValue,
         devotionFile
     });
 
@@ -106,8 +104,7 @@ const handleLecturerUpdateDevotion = async(req, res) => {
         devotionRole,
         devotionPeriod,
         academicYear,
-        devotionDescription,
-        devotionValue
+        devotionDescription
     } = req.body;
 
     const { status, status_code, message, data} = await lecturerDevotionService.handleLecturerUpdateDevotion({
@@ -119,7 +116,6 @@ const handleLecturerUpdateDevotion = async(req, res) => {
         devotionPeriod,
         academicYear,
         devotionDescription,
-        devotionValue,
         devotionFile
     });
 

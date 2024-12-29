@@ -32,7 +32,19 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'lecturerId'
       });
       
-      LecturerDetails.hasMany(models.Assignments, {
+      LecturerDetails.hasMany(models.Researchs, {
+        foreignKey: 'lecturerId'
+      });
+
+      LecturerDetails.hasMany(models.Publications, {
+        foreignKey: 'lecturerId'
+      });
+      
+      LecturerDetails.hasMany(models.Patents, {
+        foreignKey: 'lecturerId'
+      });
+      
+      LecturerDetails.hasMany(models.IPRights, {
         foreignKey: 'lecturerId'
       });
 

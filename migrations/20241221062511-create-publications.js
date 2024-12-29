@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Devotions', {
+    await queryInterface.createTable('Publications', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -23,22 +23,19 @@ module.exports = {
           key: 'id'
         }
       },
-      devotionName: {
+      publicationTitle: {
         type: Sequelize.STRING
       },
-      devotionRole: {
+      publicationType: {
         type: Sequelize.STRING
       },
-      devotionPeriod: {
+      journalName: {
         type: Sequelize.STRING
       },
-      academicYear: {
-        type: Sequelize.STRING
-      },
-      devotionDescription: {
+      urlPublication: {
         type: Sequelize.TEXT
       },
-      devotionFile: {
+      publicationFile: {
         type: Sequelize.TEXT
       },
       createdAt: {
@@ -52,6 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Devotions');
+    await queryInterface.dropTable('Publications');
   }
 };

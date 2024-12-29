@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Assignments extends Model {
+  class Patents extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,33 +12,30 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      Assignments.belongsTo(models.Lecturers, {
+      Patents.belongsTo(models.Lecturers, {
         foreignKey: 'lecturerId'
       });
       
-      Assignments.belongsTo(models.SuperAdmins, {
+      Patents.belongsTo(models.SuperAdmins, {
         foreignKey: 'superAdminId'
       });
 
-      Assignments.belongsTo(models.LecturerDetails,{
+      Patents.belongsTo(models.LecturerDetails,{
         foreignKey: 'lecturerId'
       });
-
     }
   }
-  Assignments.init({
+  Patents.init({
     superAdminId: DataTypes.INTEGER,
     lecturerId: DataTypes.INTEGER,
-    assignmentName: DataTypes.STRING,
-    assignmentType: DataTypes.STRING,
-    assignmentDescription: DataTypes.TEXT,
-    assignmentFile: DataTypes.TEXT,
-    assignmentValue: DataTypes.STRING,
-    assignmentPeriod: DataTypes.STRING,
-    academicYear: DataTypes.STRING
+    patentTitle: DataTypes.STRING,
+    patentDate: DataTypes.STRING,
+    registrationNumber: DataTypes.STRING,
+    description: DataTypes.TEXT,
+    patentFile: DataTypes.TEXT
   }, {
     sequelize,
-    modelName: 'Assignments',
+    modelName: 'Patents',
   });
-  return Assignments;
+  return Patents;
 };

@@ -18,7 +18,6 @@ class LecturerDevotionRepository {
                 'id',
                 'devotionName',
                 'devotionRole',
-                'devotionValue'
             ]
         };
 
@@ -35,7 +34,7 @@ class LecturerDevotionRepository {
                     'id',
                     'devotionName',
                     'devotionRole',
-                    'devotionValue',
+                    'devotionPeriod'
                 ],
                 include: [
                     {
@@ -69,7 +68,6 @@ class LecturerDevotionRepository {
                 'lecturerId',
                 'devotionName',
                 'devotionRole',
-                'devotionValue',
                 'devotionFile',
                 'devotionPeriod',
                 'academicYear',
@@ -103,7 +101,6 @@ class LecturerDevotionRepository {
         devotionPeriod,
         academicYear,
         devotionDescription,
-        devotionValue,
         devotionFile
     }) {
 
@@ -115,7 +112,6 @@ class LecturerDevotionRepository {
             devotionPeriod,
             academicYear,
             devotionDescription,
-            devotionValue,
             devotionFile
         });
 
@@ -135,7 +131,6 @@ class LecturerDevotionRepository {
         devotionPeriod,
         academicYear,
         devotionDescription,
-        devotionValue,
         devotionFile
     }) {
 
@@ -145,7 +140,6 @@ class LecturerDevotionRepository {
             devotionPeriod,
             academicYear,
             devotionDescription,
-            devotionValue,
             devotionFile
         }, {
             where: { id }

@@ -274,24 +274,8 @@ class SuperAdminRepository {
                     assignmentFilter.academicYear = academicYear;
                 }
     
-                const [devotionsSum, devotionsCount] = await Promise.all([
-                    Devotions.sum('devotionValue', { where: devotionFilter }),
-                    Devotions.count({ where: devotionFilter }),
-                ]);
-    
-                const [assignmentsSum, assignmentsCount] = await Promise.all([
-                    Assignments.sum('assignmentValue', { where: assignmentFilter }),
-                    Assignments.count({ where: assignmentFilter }),
-                ]);
-    
-                const totalSum = devotionsSum + assignmentsSum;
-                const totalCount = devotionsCount + assignmentsCount;
-    
-                const averageValue = totalCount ? totalSum / totalCount : 0;
-    
                 return {
-                    ...detail.dataValues,
-                    averageValue
+                    ...detail.dataValues
                 };
             })
         );
@@ -358,13 +342,13 @@ class SuperAdminRepository {
                 },
                 {
                     model: Devotions,
-                    attributes: ['id', 'devotionName', 'devotionValue'],
+                    attributes: ['id', 'devotionName', 'devotionPeriod'],
                     where: devotionFilter,
                     limit: 3
                 },
                 {
                     model: Assignments,
-                    attributes: ['id', 'assignmentName', 'assignmentValue'],
+                    attributes: ['id', 'assignmentName', 'assignmentPeriod'],
                     where: assignmentFilter,
                     limit: 3
                 }

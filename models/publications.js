@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Devotions extends Model {
+  class Publications extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,32 +12,31 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      Devotions.belongsTo(models.Lecturers, {
+      Publications.belongsTo(models.Lecturers, {
         foreignKey: 'lecturerId'
       });
       
-      Devotions.belongsTo(models.SuperAdmins, {
+      Publications.belongsTo(models.SuperAdmins, {
         foreignKey: 'superAdminId'
       });
 
-      Devotions.belongsTo(models.LecturerDetails,{
+      Publications.belongsTo(models.LecturerDetails,{
         foreignKey: 'lecturerId'
       });
 
     }
   }
-  Devotions.init({
+  Publications.init({
     superAdminId: DataTypes.INTEGER,
     lecturerId: DataTypes.INTEGER,
-    devotionName: DataTypes.STRING,
-    devotionRole: DataTypes.STRING,
-    devotionPeriod: DataTypes.STRING,
-    academicYear: DataTypes.STRING,
-    devotionDescription: DataTypes.TEXT,
-    devotionFile: DataTypes.TEXT
+    publicationTitle: DataTypes.STRING,
+    publicationType: DataTypes.STRING,
+    journalName: DataTypes.STRING,
+    urlPublication: DataTypes.TEXT,
+    publicationFile: DataTypes.TEXT
   }, {
     sequelize,
-    modelName: 'Devotions',
+    modelName: 'Publications',
   });
-  return Devotions;
+  return Publications;
 };

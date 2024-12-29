@@ -11,6 +11,7 @@ class ReportNoteRepository {
         reportPeriod,
         academicYear,
         reportStatus,
+        reportType,
         reportFile
     }) {
 
@@ -20,6 +21,7 @@ class ReportNoteRepository {
             reportPeriod,
             academicYear,
             reportStatus,
+            reportType,
             reportFile
         });
 
@@ -43,6 +45,7 @@ class ReportNoteRepository {
                 'academicYear',
                 'reportFile',
                 'reportStatus',
+                'reportType',
                 'updatedAt'
             ]
         };
@@ -62,6 +65,7 @@ class ReportNoteRepository {
                     'academicYear',
                     'reportFile',
                     'reportStatus',
+                    'reportType',
                     'updatedAt'
                 ],
                 limit: 10
@@ -92,6 +96,7 @@ class ReportNoteRepository {
                 'academicYear',
                 'reportFile',
                 'reportStatus',
+                'reportType',
                 'updatedAt'
             ]
         };
@@ -113,6 +118,7 @@ class ReportNoteRepository {
         reportPeriod,
         academicYear,
         reportStatus,
+        reportType,
         reportFile
     }) {
 
@@ -121,6 +127,7 @@ class ReportNoteRepository {
             reportPeriod,
             academicYear,
             reportStatus,
+            reportType,
             reportFile
         }, {
             where: { id }
@@ -162,6 +169,7 @@ class ReportNoteRepository {
                 'academicYear',
                 'reportFile',
                 'reportStatus',
+                'reportType',
                 'updatedAt'
             ],
             include: [
@@ -187,6 +195,7 @@ class ReportNoteRepository {
                     'academicYear',
                     'reportFile',
                     'reportStatus',
+                    'reportType',
                     'updatedAt'
                 ],
                 include: [

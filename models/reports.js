@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     reportName: DataTypes.STRING,
     reportPeriod: DataTypes.STRING,
     academicYear: DataTypes.STRING,
+    reportType: DataTypes.STRING,
     reportStatus: {
       type: DataTypes.ENUM,
       values: ['Selesai', 'New Comment', 'Dalam Review'],

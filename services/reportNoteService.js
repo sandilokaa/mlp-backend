@@ -10,6 +10,7 @@ class ReportNoteService {
         reportPeriod,
         academicYear,
         reportStatus,
+        reportType,
         reportFile
     }) {
 
@@ -39,6 +40,17 @@ class ReportNoteService {
                 };
             }
             
+            if (!reportType) {
+                return {
+                    status: false,
+                    status_code: 400,
+                    message: "Type is required!",
+                    data: {
+                        reportCreated: null,
+                    },
+                };
+            }
+            
             if (!academicYear) {
                 return {
                     status: false,
@@ -58,6 +70,7 @@ class ReportNoteService {
                 reportPeriod,
                 academicYear,
                 reportStatus,
+                reportType,
                 reportFile
             })
 
@@ -168,6 +181,7 @@ class ReportNoteService {
         reportPeriod,
         academicYear,
         reportStatus,
+        reportType,
         reportFile
     }) {
 
@@ -192,6 +206,10 @@ class ReportNoteService {
                 if (!reportStatus){
                     reportStatus = getReport.reportStatus;
                 }
+                
+                if (!reportType){
+                    reportType = getReport.reportType;
+                }
 
                 if (!reportFile){
                     reportFile = getReport.reportFile;
@@ -208,6 +226,7 @@ class ReportNoteService {
                 reportPeriod,
                 academicYear,
                 reportStatus,
+                reportType,
                 reportFile
             });
             

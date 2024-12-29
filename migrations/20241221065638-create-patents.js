@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Assignments', {
+    await queryInterface.createTable('Patents', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -23,26 +23,20 @@ module.exports = {
           key: 'id'
         }
       },
-      assignmentName: {
+      patentTitle: {
         type: Sequelize.STRING
       },
-      assignmentType: {
+      patentDate: {
         type: Sequelize.STRING
       },
-      assignmentDescription: {
+      registrationNumber: {
+        type: Sequelize.STRING
+      },
+      description: {
         type: Sequelize.TEXT
       },
-      assignmentFile: {
+      patentFile: {
         type: Sequelize.TEXT
-      },
-      assignmentValue: {
-        type: Sequelize.STRING
-      },
-      assignmentPeriod: {
-        type: Sequelize.STRING
-      },
-      academicYear: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -55,6 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Assignments');
+    await queryInterface.dropTable('Patents');
   }
 };

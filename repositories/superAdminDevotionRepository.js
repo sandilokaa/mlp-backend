@@ -15,7 +15,7 @@ class SuperAdminDevotionRepository {
             attributes: [
                 'id',
                 'devotionName',
-                'devotionValue',
+                'devotionPeriod',
             ],
             include: [
                 {
@@ -60,7 +60,6 @@ class SuperAdminDevotionRepository {
                 'lecturerId',
                 'devotionName',
                 'devotionRole',
-                'devotionValue',
                 'devotionFile',
                 'devotionPeriod',
                 'academicYear',
