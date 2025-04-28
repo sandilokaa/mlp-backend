@@ -229,7 +229,7 @@ class SuperAdminRepository {
 
     /* ------------------- Handle Get All Lecturer Group ------------------- */
 
-    static async handleGetAllLecturerGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear }) {
+    static async handleGetAllLecturerGroup({ name, groupName, devotionPeriod, academicYear }) {
 
         const query = {
             where: {},
@@ -259,19 +259,13 @@ class SuperAdminRepository {
                 const lecturerId = detail.id;
     
                 const devotionFilter = { lecturerId };
-                const assignmentFilter = { lecturerId };
 
                 if (devotionPeriod) {
                     devotionFilter.devotionPeriod = devotionPeriod;
                 }
-                
-                if (assignmentPeriod) {
-                    assignmentFilter.assignmentPeriod = assignmentPeriod;
-                }
 
                 if (academicYear) {
                     devotionFilter.academicYear = academicYear;
-                    assignmentFilter.academicYear = academicYear;
                 }
     
                 return {
@@ -289,38 +283,32 @@ class SuperAdminRepository {
 
     /* ------------------- Handle Get Lecture Detail ------------------- */
 
-    static async handleGetLecturerDetail({ id, devotionPeriod, assignmentPeriod, academicYear }){
+    static async handleGetLecturerDetail({ id, devotionPeriod, academicYear }){
 
         const devotionFilter = { lecturerId: id };
-        const assignmentFilter = { lecturerId: id };
 
         if (devotionPeriod) {
             devotionFilter.devotionPeriod = devotionPeriod;
         }
     
-        if (assignmentPeriod) {
-            assignmentFilter.assignmentPeriod = assignmentPeriod;
-        }
-    
         if (academicYear) {
             devotionFilter.academicYear = academicYear;
-            assignmentFilter.academicYear = academicYear;
         }
 
-        const [devotionsSum, devotionsCount] = await Promise.all([
-            Devotions.sum('devotionValue', { where: devotionFilter }),
-            Devotions.count({ where: devotionFilter }),
-        ]);
+        // const [devotionsSum, devotionsCount] = await Promise.all([
+        //     Devotions.sum('devotionValue', { where: devotionFilter }),
+        //     Devotions.count({ where: devotionFilter }),
+        // ]);
 
-        const [assignmentsSum, assignmentsCount] = await Promise.all([
-            Assignments.sum('assignmentValue', { where: assignmentFilter }),
-            Assignments.count({ where: assignmentFilter }),
-        ]);
+        // const [assignmentsSum, assignmentsCount] = await Promise.all([
+        //     Assignments.sum('assignmentValue', { where: assignmentFilter }),
+        //     Assignments.count({ where: assignmentFilter }),
+        // ]);
 
-        const totalSum = devotionsSum + assignmentsSum;
-        const totalCount = devotionsCount + assignmentsCount;
+        // const totalSum = devotionsSum + assignmentsSum;
+        // const totalCount = devotionsCount + assignmentsCount;
 
-        const averageValue = totalCount ? totalSum / totalCount : 0;
+        // const averageValue = totalCount ? totalSum / totalCount : 0;
 
         const query = {
             where: {id},
@@ -346,20 +334,14 @@ class SuperAdminRepository {
                     where: devotionFilter,
                     limit: 3
                 },
-                {
-                    model: Assignments,
-                    attributes: ['id', 'assignmentName', 'assignmentPeriod'],
-                    where: assignmentFilter,
-                    limit: 3
-                }
             ]
         };
 
         const getDetailLecturer = await LecturerDetails.findOne(query);
 
-        if (getDetailLecturer) {
-            getDetailLecturer.dataValues.averageValue = averageValue;
-        }
+        // if (getDetailLecturer) {
+        //     getDetailLecturer.dataValues.averageValue = averageValue;
+        // }
 
         return getDetailLecturer;
 

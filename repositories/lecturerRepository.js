@@ -180,7 +180,7 @@ class LecturerRepository {
 
     /* ------------------- Handle Get All Lecturer Expertise Group ------------------- */
 
-    static async handleGetAllLecturerExpertiseGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear }) {
+    static async handleGetAllLecturerExpertiseGroup({ name, groupName, devotionPeriod, academicYear }) {
         const query = {
             where: {},
             attributes: ['id'],
@@ -214,14 +214,9 @@ class LecturerRepository {
                 if (devotionPeriod) {
                     devotionFilter.devotionPeriod = devotionPeriod;
                 }
-                
-                if (assignmentPeriod) {
-                    assignmentFilter.assignmentPeriod = assignmentPeriod;
-                }
 
                 if (academicYear) {
                     devotionFilter.academicYear = academicYear;
-                    assignmentFilter.academicYear = academicYear;
                 }
     
                 return {
@@ -239,22 +234,16 @@ class LecturerRepository {
 
     /* ------------------- Handle Get Lecturer Expertise Group By Id ------------------- */
 
-    static async handleGetLecturerExpertiseGroupById({ id, devotionPeriod, assignmentPeriod, academicYear }) {
+    static async handleGetLecturerExpertiseGroupById({ id, devotionPeriod, academicYear }) {
 
         const devotionFilter = { lecturerId: id };
-        const assignmentFilter = { lecturerId: id };
 
         if (devotionPeriod) {
             devotionFilter.devotionPeriod = devotionPeriod;
         }
     
-        if (assignmentPeriod) {
-            assignmentFilter.assignmentPeriod = assignmentPeriod;
-        }
-    
         if (academicYear) {
             devotionFilter.academicYear = academicYear;
-            assignmentFilter.academicYear = academicYear;
         }
     
         const query = {
@@ -277,12 +266,6 @@ class LecturerRepository {
                     model: Devotions,
                     attributes: ['id', 'devotionName', 'devotionPeriod'],
                     where: devotionFilter,
-                    limit: 3
-                },
-                {
-                    model: Assignments,
-                    attributes: ['id', 'assignmentName', 'assignmentPeriod'],
-                    where: assignmentFilter,
                     limit: 3
                 }
             ]

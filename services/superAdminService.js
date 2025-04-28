@@ -315,11 +315,11 @@ class SuperAdminService {
 
     /* ------------------- Handle Get All Lecturer Group ------------------- */
 
-    static async handleGetAllLecturerGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear }){
+    static async handleGetAllLecturerGroup({ name, groupName, devotionPeriod, academicYear }){
 
         try {
 
-            const getLecturer = await superAdminRepository.handleGetAllLecturerGroup({ name, groupName, devotionPeriod, assignmentPeriod, academicYear });
+            const getLecturer = await superAdminRepository.handleGetAllLecturerGroup({ name, groupName, devotionPeriod, academicYear });
 
             return {
                 status: true,
@@ -350,11 +350,11 @@ class SuperAdminService {
     
     /* ------------------- Handle Get Lecture Detail ------------------- */
 
-    static async handleGetLecturerDetail({ id, devotionPeriod, assignmentPeriod, academicYear }){
+    static async handleGetLecturerDetail({ id, devotionPeriod, academicYear }){
 
         try {
 
-            const getLecturerDetail = await superAdminRepository.handleGetLecturerDetail({ id, devotionPeriod, assignmentPeriod, academicYear });
+            const getLecturerDetail = await superAdminRepository.handleGetLecturerDetail({ id, devotionPeriod, academicYear });
 
             return {
                 status: true,
